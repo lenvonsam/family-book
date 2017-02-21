@@ -1,8 +1,7 @@
-package hello
+package org.family.book.controller
 
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
 class HelloController() {
