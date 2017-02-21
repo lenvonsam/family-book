@@ -41,6 +41,7 @@ val kotlinVersion = extra["kotlinVersion"] as String
 dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+	compile("org.springframework.boot:spring-boot-starter-security")
 	compile("com.domingosuarez.boot:spring-boot-starter-jade4j:0.3.1")
 	compile("com.h2database:h2")
 	compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
