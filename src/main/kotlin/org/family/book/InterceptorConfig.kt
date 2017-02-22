@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
+import org.springframework.beans.factory.annotation.Value
 
 @Configuration
 open class InterceptorConfig : WebMvcConfigurerAdapter() {
@@ -16,7 +17,7 @@ open class InterceptorConfig : WebMvcConfigurerAdapter() {
 	lateinit var csrfInterceptor: CsrfInterceptor
 
 	override fun addInterceptors(registry: InterceptorRegistry) {
-		log.info(">>>>>registerInterceptor")
+
 		registry.addInterceptor(csrfInterceptor).addPathPatterns("/**")
 	}
 }

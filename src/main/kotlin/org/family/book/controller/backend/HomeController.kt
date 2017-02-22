@@ -6,10 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
 @RequestMapping("/backend")
-class LoginController {
+class HomeController {
 	
-	
-	@GetMapping("login")
-	fun backLogin() = "backend/login"
-	
+	//后台主页
+	@GetMapping("")
+	fun homeIndex() = "backend/index"
 }
