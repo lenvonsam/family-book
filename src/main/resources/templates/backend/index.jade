@@ -1,4 +1,23 @@
 extends layout/basic.jade
 
 block content
-  h1 dashboard
+  .row-content.am-cf
+    .row.am-cf
+      .am-u-sm-12.am-u-md-12.am-u-lg-4
+        .widget.am-cf
+          .widget-head.am-cf
+            .widget-title.am-fl 月度收支计划
+            .widget-function.am-fr
+              a.am-icon-cog(href="javascript:;")
+          .widget-body.am-fr
+            .am-fl
+              .widget-fluctuation-period-text
+                | ￥61736.45
+                button.widget-fluctuation-tpl-btn
+                  i.am-icon-calendar
+                  | 更多月份
+            .am-fr.am-cf
+              .widget-fluctuation-description-amount.text-success
+                | +￥30420.56
+              .widget-fluctuation-description-text.am-text-right
+                | 8月份收入

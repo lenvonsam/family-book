@@ -1,0 +1,75 @@
+//- 头部
+header
+  //- logo
+  .am-fl.tpl-header-logo
+    a(href="javascript:;")
+      img(src="#{_base}/img/logo.png")
+  //- 右侧内容
+  .tpl-header-fluid
+    //- 侧边切换
+    .am-fl.tpl-header-switch-button.am-icon-list
+    //- 搜索
+    .am-fl.tpl-header-search
+      form.tpl-header-search-form(action="javascript:;")
+        button.tpl-header-search-btn.am-icon-search
+        input.tpl-header-search-box(type="text",placeholder="搜索内容...")
+    //- 其他功能
+    .am-fr.tpl-header-navbar
+      ul
+        //- 欢迎语
+        li.am-text-sm.tpl-header-navbar-welcome
+          a(href="javascript:;")
+            | 欢迎您,
+            span Sam
+        //- 新邮件
+        li.am-dropdown.tpl-dropdown(data-am-dropdown)
+          a.am-dropdown-toggle.tpl-dropdown-toggle(href="javascript:;",data-am-dropdown-toggle)
+            i.am-icon-envelope
+            span.am-badge.am-badge-success.am-round.item-feed-badge 4
+          //- 弹出列表
+          ul.am-dropdown-content.tpl-dropdown-content
+            li.tpl-dropdown-menu-messages
+              a.tpl-dropdown-menu-messages-item.am-cf(href="javascript:;")
+                .menu-messages-ico
+                  img(src="#{_base}/img/user04.png")
+                .menu-messages-time 3小时前
+                .menu-messages-content
+                  .menu-messages-content-title
+                    i.am-icon-circle-o.am-text-success
+                    span 夕阳色
+                  .am-text-truncate xxx
+                  .menu-messages-content-time 2016-01-21
+            li.tpl-dropdown-menu-messages
+              a.tpl-dropdown-menu-messages-item.am-cf(href="javascript:;")
+                .menu-messages-ico
+                  img(src="#{_base}/img/user02.png")
+                .menu-messages-time 5天前
+                .menu-messages-content
+                  .menu-messages-content-title
+                    i.am-icon-circle-o.am-text-warning
+                    span 888
+                  .am-text-truncate 9999
+                  .menu-messages-content-time 2015-10-01
+            li.tpl-dropdown-menu-messages
+              a.tpl-dropdown-menu-messages-item.am-cf(href="javascript:;")
+                i.am-icon-circle-o
+                | 进入列表...
+        //- 新提示
+        li.am-dropdown(data-am-dropdown)
+          a.am-dropdown-toggle(href="javascript:;")
+            i.am-icon-bell
+            span.am-badge.am-badge-warning.am-round.item-feed-badge 5
+          //- 弹出列表
+          ul.am-dropdown-content.tpl-dropdown-content
+            li.tpl-dropdown-menu-notifications
+              a.tpl-dropdown-menu-notifications-item.am-cf(href="javascript:;")
+                .tpl-dropdown-menu-notifications-title
+                  i.am-icon-line-chart
+                  span 有6笔新的记录
+                .tpl-dropdown-menu-notifications-time 12分钟前
+            li.tpl-dropdown-menu-notifications
+              a.tpl-dropdown-menu-notifications-item.am-cf(href="javascript:;")
+                i.am-icon-bell 进入列表...
+        li.am-text-sm
+          a(href="javascript:;")
+            span.am-icon-sign-out 退出

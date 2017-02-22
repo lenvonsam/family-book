@@ -16,81 +16,9 @@ html
   body.theme-white
     .am-g.tpl-g
       //- 头部
-      header
-        //- logo
-        .am-fl.tpl-header-logo
-          a(href="javascript:;")
-            img(src="#{_base}/img/logo.png")
-        //- 右侧内容
-        .tpl-header-fluid
-          //- 侧边切换
-          .am-fl.tpl-header-switch-button.am-icon-list
-          //- 搜索
-          .am-fl.tpl-header-search
-            form.tpl-header-search-form(action="javascript:;")
-              button.tpl-header-search-btn.am-icon-search
-              input.tpl-header-search-box(type="text",placeholder="搜索内容...")
-          //- 其他功能
-          .am-fr.tpl-header-navbar
-            ul
-              //- 欢迎语
-              li.am-text-sm.tpl-header-navbar-welcome
-                a(href="javascript:;")
-                  | 欢迎您,
-                  span Sam
-              //- 新邮件
-              li.am-dropdown.tpl-dropdown(data-am-dropdown)
-                a.am-dropdown-toggle.tpl-dropdown-toggle(href="javascript:;",data-am-dropdown-toggle)
-                  i.am-icon-envelope
-                  span.am-badge.am-badge-success.am-round.item-feed-badge 4
-                //- 弹出列表
-                ul.am-dropdown-content.tpl-dropdown-content
-                  li.tpl-dropdown-menu-messages
-                    a.tpl-dropdown-menu-messages-item.am-cf(href="javascript:;")
-                      .menu-messages-ico
-                        img(src="#{_base}/img/user04.png")
-                      .menu-messages-time 3小时前
-                      .menu-messages-content
-                        .menu-messages-content-title
-                          i.am-icon-circle-o.am-text-success
-                          span 夕阳色
-                        .am-text-truncate xxx
-                        .menu-messages-content-time 2016-01-21
-                  li.tpl-dropdown-menu-messages
-                    a.tpl-dropdown-menu-messages-item.am-cf(href="javascript:;")
-                      .menu-messages-ico
-                        img(src="#{_base}/img/user02.png")
-                      .menu-messages-time 5天前
-                      .menu-messages-content
-                        .menu-messages-content-title
-                          i.am-icon-circle-o.am-text-warning
-                          span 888
-                        .am-text-truncate 9999
-                        .menu-messages-content-time 20115-10-01
-      .left-sidebar
-        .tpl-sidebar-user-panel
-          .tpl-user-panel-slide-toggleable
-            .tpl-user-panel-profile-picture
-              img(src="#{_base}/img/user04.png")
-            span.user-panel-logged-in-text
-              i.am-icon-circle-o.am-text-success.tpl-user-panel-status-icon
-              | 禁言
-            a.tpl-user-panel-action-link(href="javascript:;")
-              span.am-icon-pencil
-              | 账号设置
-        ul.sidebar-nav
-          li.sidebar-nav-heading
-            | Components
-            span.sidebar-nav-heading-info 附加组件
-          li.sidebar-nav-link
-            a.active(href="#")
-              i.am-icon-home.sidebar-nav-link-logo
-              | 首页
-          li.sidebar-nav-link
-            a(href="#")
-              i.am-icon-table.sidebar-nav-link-logo
-              | 表格
-
+      include head.jade
+      //- 侧边栏
+      include sidebar.jade
       .tpl-content-wrapper
         block content
     include js.jade
