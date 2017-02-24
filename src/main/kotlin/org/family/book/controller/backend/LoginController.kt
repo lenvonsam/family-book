@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping
 @RequestMapping("/backend")
 class LoginController {
 	
-	
 	@GetMapping("login")
 	fun backLogin() = "backend/login"
 	

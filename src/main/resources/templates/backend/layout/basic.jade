@@ -13,7 +13,7 @@ html
     link(rel="apple-touch-icon=precomposed",href="#{_base}/i/app-icon72x72@2x.png")
     include css.jade
 
-  body.theme-white
+  body.theme-white(data-amui="2.x")
     .am-g.tpl-g
       //- 头部
       include head.jade
@@ -21,6 +21,7 @@ html
       include sidebar.jade
       .tpl-content-wrapper
         block content
+
     include js.jade
 
 

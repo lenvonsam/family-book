@@ -1,7 +1,17 @@
 extends layout/basic.jade
+append js
+  script(src="#{_base}/js/echarts.min.js")
+  script(src="#{_base}/js/echartInit.js")
 
 block content
   .row-content.am-cf
+    .row.am-cf
+      button#btnModal.am-btn.am-btn-primary(type="button") 模态框
+      #familyChooseInfo.am-modal.xxx
+        .am-modal-dialog
+          .am-modal-hd 请选择所属家庭
+          .am-modal-bd xxx
+
     .row.am-cf
       .am-u-sm-12.am-u-md-12.am-u-lg-4
         .widget.am-cf
@@ -21,3 +31,36 @@ block content
                 | +￥30420.56
               .widget-fluctuation-description-text.am-text-right
                 | 8月份收入
+      .am-u-sm-12.am-u-md-12.am-u-lg-4
+        .widget.widget-primary.am-cf
+          .widget-statistic-header 本季度利润
+          .widget-statistic-body
+            .widget-statistic-value ￥27，294
+            .widget-statistic-description
+              | 本季度比去年多收入
+              strong 2593元
+              | 人命币
+            span.widget-statistic-icon.am-icon-credit-card-alt
+      .am-u-sm-12.am-u-md-12.am-u-lg-4
+        .widget.widget-purple.am-cf
+          .widget-statistic-heaer 上季度利润
+          .widget-statistic-body
+            .widget-statistic-value ￥30，000
+            .widget-statistic-description
+              | 上季度比去年多收入
+              strong 3000元
+              | 人民币
+            span.widget-statistic-icon.am-icon-support
+    .row.am-cf
+      .am-u-sm-12.am-u-md-12.am-u-lg-12
+        .widget.am-cf
+          .widget-head.am-cf
+            .widget-title.am-fl 月度财务收支计划
+            .widget-function.am-fr
+              a.am-icon-cog(href="javascript:;")
+          #indexTplEcharts.widget-body-md.widget-body.tpl-amendment-echarts.am-fr
+
+
+
+
+

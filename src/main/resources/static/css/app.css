@@ -187,10 +187,13 @@ ul.tpl-dropdown-content .tpl-dropdown-menu-messages-item .menu-messages-content 
   font-size: 11px;
 }
 .am-dimmer {
-  z-index: 1200;
+  z-index: 1300;
 }
 .am-modal {
-  z-index: 1300;
+  z-index: 1310 !important;
+}
+.xxx {
+  z-index:2000 ;
 }
 .am-datepicker-dropdown {
   z-index: 1400;
@@ -376,7 +379,7 @@ ul.tpl-dropdown-content .tpl-dropdown-menu-messages-item .menu-messages-content 
 }
 .tpl-content-wrapper {
   transition: all 0.4s ease-in-out;
-  position: relative;
+  /*position: relative;*/
   margin-left: 240px;
   z-index: 1101;
   min-height: 922px;
