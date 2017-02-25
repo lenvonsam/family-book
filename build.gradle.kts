@@ -44,6 +44,8 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-security")
 	compile("com.domingosuarez.boot:spring-boot-starter-jade4j:0.3.1")
 	compile("com.h2database:h2")
+	compile("cn.leancloud:java-sdk:0.1.+")
+	compile("nl.komponents.kovenant:kovenant:3.3.0")
 	compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")
 	compile("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 	compile("com.fasterxml.jackson.module:jackson-module-kotlin:2.8.4")
