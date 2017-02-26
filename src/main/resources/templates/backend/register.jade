@@ -1,0 +1,24 @@
+extends ./layout/basicSimple.jade
+
+block content
+  .am-g
+    .tpl-login
+      .tpl-login-content
+        .tpl-login-title 用户注册
+        span.tpl-login-content-info 创建一个新的用户
+        form.am-form.tpl-form-line-form
+          .am-form-group
+            input.tpl-form-input(type="text",placeholder="邮箱")
+          .am-form-group
+            input.tpl-form-input(type="text",placeholder="用户")
+          .am-form-group
+            input.tpl-form-input(type="password",placeholder="请输入密码")
+          .am-form-group
+            input.tpl-form-input(type="password",placeholder="再次输入密码")
+          .am-form-group.tpl-login-remember-me
+            input(type="checkbox")
+            label(for="remember-me")
+              | 我已阅读并同意
+              a(href="javascript:;") 《用户注册》
+          .am-form-group
+            button.am-btn.am-btn-primary.am-btn-block.tpl-btn-bg-color-success.tpl-login-btn 提交

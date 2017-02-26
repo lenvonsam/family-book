@@ -25,6 +25,7 @@ open class AccessFilter : Filter {
 	override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
 		log.info("accessFilter doFilter-----------------")
 		val req: HttpServletRequest = request as HttpServletRequest
+		log.info("req URI:>>"+req.requestURI)
 		if (shouldPrintLog(req.requestURI)) {
 			val params: Map<String, Array<String>> = req.parameterMap
 			var strBuff = StringBuffer().append("[${req.method}]\nParameters:\n ${req.method.capitalize()}, ${req.requestURI}")
@@ -35,6 +36,9 @@ open class AccessFilter : Filter {
 		}
 		chain.doFilter(request, response);
 	}
+	
+	//FIXME 正则表达式
+	private val x = "/^/"
 
-	private fun shouldPrintLog(url: String) = !arrayOf("/js", "/img", "/css", "/lib", "/favicon.ico").contains(url)
+	private fun shouldPrintLog(url: String) = !(arrayOf("/js", "/img", "/css", "/lib", "/favicon.ico").contains(url))
 }

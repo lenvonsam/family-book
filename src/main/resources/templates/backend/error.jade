@@ -1,0 +1,12 @@
+extends ./layout/basicSimple.jade
+
+block content
+  .row-content.am-cf
+    .widget.am-cf
+      .widget-body
+        .tpl-page-state
+          .tpl-page-state-title.am-text-center.tpl-error-title 404
+          .tpl-error-title-info Page Not Found
+          .tpl-page-state-content.tpl-error-content
+            p 对不起,没有找到您所需要的页面,可能是URL不确定,或者页面已被移除。
+            button.am-btn.am-btn-secondary.am-radius.tpl-error-btn Back Home

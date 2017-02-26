@@ -3,8 +3,8 @@ html
   head
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible",content="IE=edge")
-    title 家庭账本后台管理系统
-    meta(name="description",content="后台管理系统")
+    title=title
+    meta(name="description",content="#{tiltle}")
     meta(name="keywords",content="backend system")
     meta(name="viewport",content="width=device-width, initial-scale=1")
     meta(name="renderer",content="webkit")
@@ -14,14 +14,5 @@ html
     include css.jade
 
   body.theme-white
-    .am-g.tpl-g
-      //- 头部
-      include head.jade
-      //- 侧边栏
-      include sidebar.jade
-      .tpl-content-wrapper
-        block content
-
+    block content
     include js.jade
-
-

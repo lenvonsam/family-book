@@ -11,4 +11,9 @@ class LoginController {
 	@GetMapping("login")
 	fun backLogin() = "backend/login"
 	
+	@GetMapping("register")
+	fun backRegister() = "backend/register"
+	
+	//TODO 忘记密码
+	
 }

@@ -44,7 +44,7 @@ $(function(){
       }]
   };
 
-  echartsA.setOption(option);
+  // echartsA.setOption(option);
 
   $('#btnModal').click(function(){
     alert('xxx');
