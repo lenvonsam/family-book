@@ -11,7 +11,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.boot.web.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean
 import org.springframework.core.Ordered
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.web.context.request.RequestContextListener
 
 /**
 @SpringBootApplication same as @Configuration @EnableAutoConfiguration @ComponentScan
@@ -29,7 +29,6 @@ open class Application : SpringBootServletInitializer {
 
 	@Autowired
 	lateinit var accessFilter: AccessFilter
-
 
 	@Bean
 	public fun fewFilterRegistration(): FilterRegistrationBean {

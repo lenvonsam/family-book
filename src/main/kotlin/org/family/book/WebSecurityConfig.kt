@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.web.util.matcher.RequestMatcher
+import javax.servlet.http.HttpServletRequest
 
 @Configuration
 @EnableWebSecurity
@@ -28,13 +30,12 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 	@Throws(Exception::class)
 	override fun configure(http: HttpSecurity) {
 		http.authorizeRequests()
-				.antMatchers("/error","/backend/**", "/js/**","/css/**","/i/**","/img/**","/fonts/**").permitAll()
+				.antMatchers("/api/**", "/error", "/backend/**", "/js/**", "/css/**", "/i/**", "/img/**", "/fonts/**").permitAll()
 //				.antMatchers("/users/**").hasAuthority("ADMIN")
 				.anyRequest().fullyAuthenticated()
 				.and().csrf()
 //				// disable csrf protection url
-//				.requireCsrfProtectionMatcher(new AllExceptUrls("/bamboo-store/api/v1/pingxx/notify",
-//						"http://jarvis.eurus.cn/projects/9/webhook","/api/v1/pingxx/notify"))
+				.requireCsrfProtectionMatcher(AllExceptUrls(arrayOf("http://jarvis.eurus.cn/projects/9/webhook", "/api/v1/pingxx/notify")))
 				.and()
 				.formLogin()
 				.loginPage("/backend/login")
@@ -52,14 +53,14 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 	}
 
 
-//	@Throws(Exception::class)
+	//	@Throws(Exception::class)
 	override fun configure(auth: AuthenticationManagerBuilder?) {
 //		auth.userDetailsService()
 		auth?.inMemoryAuthentication()?.withUser("admin")?.password("admin")?.roles("USER")
 	}
 
 
-//	private static class AllExceptUrls implements RequestMatcher {
+	//	private static class AllExceptUrls implements RequestMatcher {
 //		private static final String[] ALLOWED_METHODS = new String[] { "GET", "HEAD", "TRACE", "OPTIONS" };
 //		private final String[] allowedUrls;
 //
@@ -86,6 +87,31 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 //		}
 //
 //	}
+	private open class AllExceptUrls : RequestMatcher {
+		private val ALLOWED_METHODS = arrayOf("GET", "HEAD", "TRACE", "OPTIONS")
+		private val allowedUrls: Array<String>
+
+		constructor(allowedUrls: Array<String>) {
+			this.allowedUrls = allowedUrls
+		}
+
+		override fun matches(request: HttpServletRequest): Boolean {
+			var method = request.method
+			ALLOWED_METHODS.map { mtd ->
+				if (mtd.equals(method)) return false
+			}
+			var uri = request.requestURI
+			println("uri:>>>>"+uri)
+			this.allowedUrls.map { url ->
+				if (uri.startsWith("/api")) {
+					return false
+				} else {
+					if (url.equals(uri)) return false
+				}
+			}
+			return true
+		}
+	}
 
 
 }
