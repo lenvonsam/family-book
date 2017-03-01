@@ -17,12 +17,6 @@ class ClassifyController : BasicController() {
 		var reqMap = HashMap<String, Any>()
 		reqMap.put("returncode", "123")
 		reqMap.put("xxx", "456")
-		avosService.saveObject("test", reqMap).success {
-			println("success==============$it")
-		}.fail {
-			println("error")
-		}
-		println("next")
 		return "backend/classify/index"
 	}
 

@@ -23,9 +23,8 @@ open class AccessFilter : Filter {
 
 	@Throws(Exception::class)
 	override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
-		log.info("accessFilter doFilter-----------------")
 		val req: HttpServletRequest = request as HttpServletRequest
-		log.info("req URI:>>" + req.requestURI)
+//		log.info("req URI:>>" + req.requestURI)
 		if (shouldPrintLog(req.requestURI)) {
 			val params: Map<String, Array<String>> = req.parameterMap
 			var strBuff = StringBuffer().append("[${req.method}]\nParameters:\n ${req.method.capitalize()}, ${req.requestURI}")

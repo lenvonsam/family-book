@@ -12,6 +12,7 @@ import org.springframework.boot.web.support.SpringBootServletInitializer
 import org.springframework.context.annotation.Bean
 import org.springframework.core.Ordered
 import org.springframework.web.context.request.RequestContextListener
+import com.avos.avoscloud.AVUser
 
 /**
 @SpringBootApplication same as @Configuration @EnableAutoConfiguration @ComponentScan
