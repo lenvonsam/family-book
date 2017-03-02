@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.web.util.matcher.RequestMatcher
 import javax.servlet.http.HttpServletRequest
+import org.family.book.service.AuthService
 
 @Configuration
 @EnableWebSecurity
@@ -52,11 +53,13 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 				.permitAll()
 	}
 
+	@Autowired
+	lateinit var authService: AuthService
 
-	//	@Throws(Exception::class)
+	@Throws(Exception::class)
 	override fun configure(auth: AuthenticationManagerBuilder?) {
-//		auth.userDetailsService()
-		auth?.inMemoryAuthentication()?.withUser("admin")?.password("admin")?.roles("USER")
+		auth?.userDetailsService(authService)
+//		auth?.inMemoryAuthentication()?.withUser("admin")?.password("admin")?.roles("USER")
 	}
 
 	private open class AllExceptUrls : RequestMatcher {
@@ -73,7 +76,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 				if (mtd.equals(method)) return false
 			}
 			var uri = request.requestURI
-			println("uri:>>>>"+uri)
+			println("uri:>>>>" + uri)
 			this.allowedUrls.map { url ->
 				if (uri.startsWith("/api")) {
 					return false

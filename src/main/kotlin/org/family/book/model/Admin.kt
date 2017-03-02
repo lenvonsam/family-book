@@ -6,5 +6,5 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class Admin(@Id @GeneratedValue(strategy = GenerationType.AUTO) val id: Int, var name: String, var password: String, var enable: Boolean = true) : BaseModel() {
+class Admin(@Id @GeneratedValue(strategy = GenerationType.AUTO) val id: Int, var name: String, var password: String, var enable: Int = 1) : BaseModel() {
 }
