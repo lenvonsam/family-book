@@ -42,6 +42,7 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-web")
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
 	compile("org.springframework.boot:spring-boot-starter-security")
+	compile("mysql:mysql-connector-java")
 	compile("com.domingosuarez.boot:spring-boot-starter-jade4j:0.3.1")
 	compile("com.h2database:h2")
 	compile("cn.leancloud:java-sdk:0.1.+")

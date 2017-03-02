@@ -178,7 +178,6 @@ open class AvosService {
 			println(avQuery.first.toJSONObject())
 			println(avQuery.find().toList())
 			var l:String = avQuery.first.toJSONObject().toString()
-			var map = ObjectMapper().readValue(l,TypeReference<Map<String,Any>>(){})
 			result.put("members",avQuery.first.toJSONObject())
 //			result.put("members", query.find())
 		} catch(e: Exception) {

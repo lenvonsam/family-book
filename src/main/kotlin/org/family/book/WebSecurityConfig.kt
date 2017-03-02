@@ -59,34 +59,6 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 		auth?.inMemoryAuthentication()?.withUser("admin")?.password("admin")?.roles("USER")
 	}
 
-
-	//	private static class AllExceptUrls implements RequestMatcher {
-//		private static final String[] ALLOWED_METHODS = new String[] { "GET", "HEAD", "TRACE", "OPTIONS" };
-//		private final String[] allowedUrls;
-//
-//		public AllExceptUrls(String... allowedUrls) {
-//			this.allowedUrls = allowedUrls;
-//		}
-//
-//		@Override
-//		public boolean matches(HttpServletRequest request) {
-//			String method = request.getMethod();
-//			for (String allowedMethod : ALLOWED_METHODS) {
-//				if (allowedMethod.equals(method)) {
-//					return false;
-//				}
-//			}
-//
-//			String uri = request.getRequestURI();
-//			for (String allowedUrl : allowedUrls) {
-//				if (uri.equals(allowedUrl)) {
-//					return false;
-//				}
-//			}
-//			return true;
-//		}
-//
-//	}
 	private open class AllExceptUrls : RequestMatcher {
 		private val ALLOWED_METHODS = arrayOf("GET", "HEAD", "TRACE", "OPTIONS")
 		private val allowedUrls: Array<String>
