@@ -1,6 +1,5 @@
 package org.family.book.service
 
-import com.alibaba.fastjson.TypeReference
 import com.avos.avoscloud.AVException
 import com.avos.avoscloud.AVOSCloud
 import com.avos.avoscloud.AVObject
@@ -8,7 +7,6 @@ import com.avos.avoscloud.AVQuery
 import com.avos.avoscloud.AVRelation
 import com.avos.avoscloud.AVUser
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -177,7 +175,6 @@ open class AvosService {
 			println(avQuery.first.toString())
 			println(avQuery.first.toJSONObject())
 			println(avQuery.find().toList())
-			var l:String = avQuery.first.toJSONObject().toString()
 			result.put("members",avQuery.first.toJSONObject())
 //			result.put("members", query.find())
 		} catch(e: Exception) {

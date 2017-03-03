@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 @Entity
 class Classify(@Id @GeneratedValue(strategy = GenerationType.AUTO) val id: Int, var name: String) : BaseModel() {
 
+	
 	@JsonIgnore
 	@ManyToOne
 	lateinit var family: Family

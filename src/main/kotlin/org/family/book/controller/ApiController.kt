@@ -34,7 +34,17 @@ class ApiController : BasicController() {
 		println("api phone:>>$phone;code:>>$code")
 //		return avosService.signUpOrLoginByMobilePhone(phone, code)
 		//用于测试
-		return avosService.loginByMobilePhoneNumber(phone, code)
+//		return avosService.loginByMobilePhoneNumber(phone, code)
+		var result = HashMap<String, Any>()
+		var user = userService.loginByPhoneAndPassword(phone, code)
+		if (user == null) {
+			result.put("returnCode", -1)
+			result.put("errMsg", "用户名或密码错误")
+		} else {
+			result.put("returnCode", 0)
+			result.put("user", user)
+		}
+		return result
 	}
 
 
@@ -65,8 +75,9 @@ class ApiController : BasicController() {
 
 
 	@PostMapping("createFamily")
-	fun createFamily(name: String): Map<String, Any> {
-		return avosService.createFamily(name)
+	fun createFamily(name: String, userid: String): Map<String, Any> {
+//		return avosService.createFamily(name)
+		return familyService.createFamily(name, Integer.parseInt(userid))
 	}
 
 	@PostMapping("joinFamily")

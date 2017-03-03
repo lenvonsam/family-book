@@ -6,6 +6,8 @@ import org.family.book.service.AvosService
 import javax.servlet.http.HttpServletResponse
 import javax.servlet.http.HttpServletRequest
 import org.family.book.service.CommonService
+import org.family.book.service.UserService
+import org.family.book.service.FamilyService
 
 @Controller
 open class BasicController {
@@ -17,5 +19,11 @@ open class BasicController {
 
 	@Autowired
 	lateinit var req: HttpServletRequest
+
+	@Autowired
+	lateinit var userService: UserService
+
+	@Autowired
+	lateinit var familyService: FamilyService
 
 }

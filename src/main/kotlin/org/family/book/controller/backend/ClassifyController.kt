@@ -24,7 +24,7 @@ class ClassifyController : BasicController() {
 	fun classifyNew() = "backend/classify/new"
 
 	@GetMapping("/{id}")
-	fun classifyEidt(@PathVariable("id") id:String,m:Model): String {
+	fun classifyEidt(@PathVariable("id") id:String): String {
 		println("classify id:>>$id")
 //		m.addAttribute("classifyObj")
 		return "backend/classify/edit"
