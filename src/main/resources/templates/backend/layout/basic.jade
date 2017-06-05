@@ -15,13 +15,35 @@ html
 
   body.theme-white
     .am-g.tpl-g
+      //- 错误信息
       //- 头部
       include head.jade
       //- 侧边栏
       include sidebar.jade
       .tpl-content-wrapper
         block content
-
+      #familyLists.am-offcanvas
+        .am-offcanvas-bar.am-offcanvas-bar-flip
+          .am-offcanvas-content(style="padding-top:58px;")
+            h2(style="margin-top:1rem;margin-bottom:1rem;") 家庭列表
+            ul#rightFamilyList.right-family-list
+              li.right-item
+                | xxx
+                span.am-fr.am-icon-check.am-success.am-icon-md(style="color:#5eb95e;")
+              li.right-item xxx
+            .am-btn-toolbar(style="margin-top:5rem;")
+              .am-btn-group(style="display:flex;width:100%;")
+                a#rightSideFamilyCreate.am-btn.outline-btn-default(style="flex:1") 新建家庭
+                a.am-btn.outline-btn-default(style="flex:1") 加入家庭
+      input(type="hidden",name="rootcsrf",value="#{_csrf}")
+      input(type="hidden",name="rootbase",value="#{_base}")
+      #familyPrompt.am-modal.am-modal-prompt
+        .am-modal-dialog
+          .am-modal-hd 新建家庭
+          .am-modal-bd
+            input.am-modal-prompt-input(placeholder="请输入家庭名称")
+          .am-modal-footer
+            span.am-modal-btn(data-am-modal-cancel) 取消
+            span.am-modal-btn(data-am-modal-confirm) 创建
     include js.jade
-
 

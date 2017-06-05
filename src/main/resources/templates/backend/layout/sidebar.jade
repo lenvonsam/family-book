@@ -3,40 +3,38 @@
     .tpl-user-panel-slide-toggleable
       .tpl-user-panel-profile-picture
         img(src="#{_base}/img/user04.png")
-      span.user-panel-logged-in-text
-        i.am-icon-circle-o.am-text-success.tpl-user-panel-status-icon
-        | 禁言
-      a.tpl-user-panel-action-link(href="javascript:;")
-        span.am-icon-pencil
+      span.user-panel-logged-in-text(style="color:#a2aaad;")
+        i.am-icon-hand-peace-o.am-text-success.tpl-user-panel-status-icon
+        | 欢迎您，#{currentUser.nickname}
+      a.tpl-user-panel-action-link(href="javascript:;",style="color:#cfcfcf;")
+        span.am-icon-pencil.mr-5
         | 账号设置
   ul.sidebar-nav
     li.sidebar-nav-heading
-      | Components
-      span.sidebar-nav-heading-info 附加组件
-    li.sidebar-nav-link
-      a.active(href="#")
+      i.am-icon-group.mr-5.am-text-warning
+      | #{currentUser.choosedFamily.name}
+      a#openRightBtn.sidebar-nav-heading-info.am-fr(style="margin-top:3px;",data-ref="open")
+        | 更换家庭
+        span.ml-5.am-icon-angle-right
+    li.sidebar-nav-link.item
+      a.active(href="#{_base}/backend/")
         i.am-icon-home.sidebar-nav-link-logo
         | 首页
-    li.sidebar-nav-link
-      a(href="#")
-        i.am-icon-table.sidebar-nav-link-logo
-        | 表格
+    li.sidebar-nav-link.item
+      a(href="#{_base}/backend/accountBook")
+        i.am-icon-check-square.sidebar-nav-link-logo
+        | 随手记
     li.sidebar-nav-link
       a.sidebar-nav-sub-title(href="javascript:;")
-        i.am-icon-table.sidebar-nav-link-logo
-        | 数据列表
+        i.am-icon-cny.sidebar-nav-link-logo
+        | 账本管理
         span.am-icon-chevron-down.am-fr.am-margin-right-sm.sidebar-nav-sub-ico
       ul.sidebar-nav.sidebar-nav-sub
-        li.sidebar-nav-link
+        li.sidebar-nav-link.item
+          a(href="#{_base}/backend/classify")
+            span.am-icon-angle-right.sidebar-nav-link-logo
+            | 账本分类
+        li.sidebar-nav-link.item
           a(href="#")
             span.am-icon-angle-right.sidebar-nav-link-logo
-            | 文字列表
-        li.sidebar-nav-link
-          a(href="#")
-            span.am-icon-angle-right.sidebar-nav-link-logo
-            | 图文列表
-    li.sidebar-nav-link
-      a(href="#")
-        i.am-icon-clone.sidebar-nav-link-logo
-        | 注册
-        span.am-badge.am-badge-seondary.sidebar-nav-link-logo-ico.am-round.am-fr.am-margin-right-sm 6
+            | 家庭账目列表

@@ -10,60 +10,25 @@ block content
             .widget-function.am-fr
               a.am-icon-cog(href="javascript:;")
           .widget-body.am-fr
-            form.am-form.tpl-form-line-form
+            form.am-form.tpl-form-line-form(action="#{_base}/backend/classify/create",method="post")
               .am-form-group
                 label.am-u-sm-3.am-form-label
-                  | 标题
-                  span.tpl-form-line-small-title title
+                  | 类别名称
+                  //- span.tpl-form-line-small-title title
                 .am-u-sm-9
-                  input.tpl-form-input(type="text")
-                  small 请填写标题文字10-20字左右
+                  input.tpl-form-input(type="text",name="name",required)
+                  small 请输入类别名称
               .am-form-group
                 label.am-u-sm-3.am-form-label
-                  | 发布时间
-                  span.tpl-form-line-small-title Time
+                  | 类别类型
+                  //- span.tpl-form-line-small-title Author
                 .am-u-sm-9
-                  input.am-form-field.tpl-form-no-bg(data-am-datepicker="",readonly="")
-                  small 发布时间必填
+                  select(data-am-selected,name="type")
+                    option(value="支出",selected) 支出
+                    option(value="收入") 收入
               .am-form-group
-                label.am-u-sm-3.am-form-label
-                  | 作者
-                  span.tpl-form-line-small-title Author
-                .am-u-sm-9
-                  select(data-am-selected="{searchBox:1}",style="display:none")
-                    option(value="a") The.CC
-                    option(value="b") 夕风色
-                    option(value="o") orange
-              .am-form-group
-                label.am-u-sm-3.am-form-label
-                  | SEO 关键字
-                  span.tpl-form-line-small-title SEO
-                .am-u-sm-9
-                  input(type="text")
-              .am-form-group
-                label.am-u-sm-3.am-form-label
-                  | 封面图
-                  span.tpl-form-line-small-title Images
-                .am-u-sm-9
-                  .am-form-group.am-form-file
-                    .tpl-form-file-img
-                      img(src="#{_base}/img/a5.png")
-                    button.am-btn.am-btn-danger.am-btn-sm
-                      i.am-icon-cloud-upload
-                      | 添加封面图片
-                    input(type="file",multiple="")
-              .am-form-group
-                label.am-u-sm-3.am-form-label 隐藏文章
-                .am-u-sm-9
-                  .tpl-switch
-                    input.ios-switch.bigswitch.tpl-switch-btn(type="checkbox",checked="")
-                    .tpl-switch-btn-view
-                      div
-              .am-form-group
-                label.am-u-sm-3.am-form-label 文章内容
-                .am-u-sm-9
-                  textarea(rows="5",style="border:1px solid #ccc;")
-              .am-form-group
+                input(type="hidden",name="_csrf",value="#{_csrf}")
                 .am-u-sm-9.am-u-sm-push-3
-                  button.am-btn.am-btn-primary.tpl-btn-bg-color-success(type="submit") 提交
+                  button.am-btn.am-btn-primary.tpl-btn-bg-color-success(type="submit") 保存
+                  a.am-btn.am-btn-default.tpl-btn-bg-color-default(href="#{_base}/backend/classify") 取消
 

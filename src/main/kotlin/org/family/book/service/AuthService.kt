@@ -7,17 +7,18 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import java.util.ArrayList
+import org.family.book.repository.UserRepository
 
 @Service
 class AuthService : UserDetailsService {
 
 	@Autowired
-	lateinit var adminRepo: AdminRepository
+	lateinit var userRepo: UserRepository
 
 	@Throws(Exception::class)
 	override fun loadUserByUsername(username: String?): User {
-		var admin = adminRepo.findByNameAndEnable(username!!, 1)
-		return User(admin.name, admin.password, ArrayList<GrantedAuthority>())
+		var user = userRepo.findByPhoneAndEnable(username!!, 1)
+		return User(user?.phone, user?.password, ArrayList<GrantedAuthority>())
 	}
 
 

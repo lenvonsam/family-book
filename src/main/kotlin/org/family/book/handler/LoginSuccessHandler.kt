@@ -6,15 +6,22 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.io.IOException
 import org.springframework.stereotype.Component
+import org.springframework.beans.factory.annotation.Autowired
+import org.family.book.repository.UserRepository
 
 @Component
-class LoginSuccessHandler: AuthenticationSuccessHandler {
+class LoginSuccessHandler : AuthenticationSuccessHandler {
+
+	@Autowired
+	lateinit var userRepo: UserRepository
 
 	@Throws(Exception::class)
 	override fun onAuthenticationSuccess(request: HttpServletRequest?, response: HttpServletResponse?, authentication: Authentication?) {
-		response?.sendRedirect(request?.contextPath+"/backend")
+		var user = userRepo.findByPhoneAndEnable(authentication!!.name, 1)
+		request?.getSession()?.setAttribute("currentUser", user)
+		response?.sendRedirect(request?.contextPath + "/backend")
 	}
-	
+
 //	private String getRedirectUrl(HttpServletRequest request, String contextPath, Admin admin) {
 //		String redirectUrl;
 //		HttpSession session = request.getSession(false);

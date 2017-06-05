@@ -9,18 +9,18 @@ header
     //- 侧边切换
     .am-fl.tpl-header-switch-button.am-icon-list
     //- 搜索
-    .am-fl.tpl-header-search
-      form.tpl-header-search-form(action="javascript:;")
-        button.tpl-header-search-btn.am-icon-search
-        input.tpl-header-search-box(type="text",placeholder="搜索内容...")
+    //- .am-fl.tpl-header-search
+    //-   form.tpl-header-search-form(action="javascript:;")
+    //-     button.tpl-header-search-btn.am-icon-search
+    //-     input.tpl-header-search-box(type="text",placeholder="搜索内容...")
     //- 其他功能
     .am-fr.tpl-header-navbar
       ul
         //- 欢迎语
-        li.am-text-sm.tpl-header-navbar-welcome
-          a(href="javascript:;")
-            | 欢迎您,
-            span Sam
+        //- li.am-text-sm.tpl-header-navbar-welcome
+        //-   a(href="javascript:;")
+        //-     | 欢迎您,
+        //-     span #{currentUser.nickname}
         //- 新邮件
         li.am-dropdown.tpl-dropdown(data-am-dropdown)
           a.am-dropdown-toggle.tpl-dropdown-toggle(href="javascript:;",data-am-dropdown-toggle)
@@ -71,5 +71,7 @@ header
               a.tpl-dropdown-menu-notifications-item.am-cf(href="javascript:;")
                 i.am-icon-bell 进入列表...
         li.am-text-sm
-          a(href="javascript:;")
-            span.am-icon-sign-out 退出
+          form(action="#{_base}/backend/logout",method="post")
+            input(type="hidden",name="_csrf",value="#{_csrf}")
+            a
+              button.am-icon-sign-out(type="submit") 退出

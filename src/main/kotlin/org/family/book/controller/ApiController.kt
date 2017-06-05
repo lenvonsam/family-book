@@ -1,17 +1,13 @@
 package org.family.book.controller
 
+import org.apache.commons.codec.binary.Base64
+import org.family.book.model.Classify
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.HashMap
 import com.alibaba.fastjson.JSONObject
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import org.springframework.web.bind.annotation.PostMapping
-import com.avos.avoscloud.AVOSCloud
-import com.avos.avoscloud.AVUser
-import org.springframework.scheduling.annotation.Async
-import java.util.concurrent.Callable
 
 //所有api接口
 @RestController
@@ -91,5 +87,70 @@ class ApiController : BasicController() {
 		return avosService.queryFamilyMember(familyId)
 	}
 
+	//获取账本分类列表
+	@GetMapping("getAccountClassifyList")
+	fun getAccountClassifyList(familyId: Int, userId: Int, type: String): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		result.put("returnCode", 0)
+		result.put("classifyList", classifyService.listByFamilyUser(userService.findByOne(userId), familyService.findByOne(familyId), type))
+		return result
+	}
+
+	//获取账本列表
+	@GetMapping("getAccountbookList")
+	fun getAccountbookList(familyId: Int, userId: Int, currentPage: Int): Map<String, Any> {
+		var type = if (req.getParameter("type") == null) "" else req.getParameter("type")
+		var word = if (req.getParameter("word") === null) "" else "%" + req.getParameter("word") + "%"
+		return accountBookService.getAccountBookListPg(userId, familyId, currentPage, type, word)
+	}
+
+	//新增账本分类
+	@PostMapping("createClassify")
+	fun createClassify(classifyObj: Classify, userId: Int): Map<String, Any> {
+		val currentUser = userService.findByOne(userId)
+		val result = HashMap<String, Any>()
+		if (classifyService.save(classifyObj, currentUser)) result.put("returnCode", 0) else result.put("returnCode", -1)
+		return result
+	}
+
+	//账本分类列表
+	@GetMapping("getClassifyList")
+	fun getClassifyList(userId: Int, currentPage: Int): Map<String, Any> {
+		var type = if (req.getParameter("type") == null) "" else req.getParameter("type")
+		var word = if (req.getParameter("word") === null) "" else "%" + req.getParameter("word") + "%"
+		println("search word:>>${word}")
+		val user = userService.findByOne(userId)
+		return classifyService.getClassifyListPg(user.id, user.choosedFamily.id!!, currentPage, type, word)
+	}
+
+	//更新账本分类
+	@PostMapping("updateClassify")
+	fun updateClassify(id: Int, name: String): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		if (classifyService.update(id, name)) result.put("returnCode", 0) else result.put("returnCode", -1)
+		return result
+	}
+
+	// 判断微信小程序用户是否之前登录过
+	@GetMapping("wxUserLogin")
+	fun wxUserLogin(code: String, encryptedData: String, iv: String): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		val sessionkey = wxMinService.getSessionKey(code)
+		println("sessionkey:>>>>>$sessionkey")
+		val sessionObj = JSONObject.parseObject(sessionkey)
+		println("sesskey:>>>>${sessionObj.get("session_key").toString()}")
+		println("encrypedData:>>>$encryptedData")
+		println("iv:>>>$iv")
+		println("byte iv length:>>${Base64.decodeBase64(iv.replace(" ","+")).size}")
+		val wxDecrypt = wxMinService.wxaesDecrypt(Base64.decodeBase64(encryptedData.replace(" ", "+")), Base64.decodeBase64(sessionObj.get("session_key").toString()), Base64.decodeBase64(iv.replace(" ","+")));
+		if (wxDecrypt.size > 0) {
+			var resultResp = String(wxMinService.WxPKCS7Decode(wxDecrypt))
+			println("--------result:>>$resultResp")
+			var resultObj  = JSONObject.parseObject(resultResp)
+			println(resultObj.get("openId").toString())
+		}
+		result.put("returnCode", 0)
+		return result
+	}
 
 }

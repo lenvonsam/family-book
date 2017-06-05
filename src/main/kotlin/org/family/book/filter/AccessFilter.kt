@@ -40,7 +40,7 @@ open class AccessFilter : Filter {
 	private val x = "/^/"
 
 	private fun shouldPrintLog(url: String): Boolean {
-		arrayOf("/js", "/img", "/css", "/lib", "/favicon.ico").map { item ->
+		arrayOf("/js", "/img", "/css", "/lib", "/favicon.ico","/fonts").map { item ->
 			if (url.startsWith(item)) return false
 		}
 		return true

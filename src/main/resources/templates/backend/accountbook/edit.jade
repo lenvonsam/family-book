@@ -15,7 +15,7 @@ block content
             //- .widget-function.am-fr
               a.am-icon-cog(href="javascript:;")
           .widget-body.am-fr
-            form.am-form.tpl-form-line-form(action="#{_base}/backend/accountBook/create",method="post")
+            form.am-form.tpl-form-line-form(action="#{_base}/backend/accountBook/update",method="post")
               .am-form-group
                 label.am-u-sm-3.am-form-label 支出/收入
                 .am-u-sm-6
@@ -30,42 +30,28 @@ block content
                 label.am-u-sm-3.am-form-label
                   | 分类
                   //- span.tpl-form-line-small-title classify
-                .am-u-sm-6
-                  select.cf-select(data-am-selected="{searchBox:1}",style="display:none",name="classifyName",required)
-                .am-u-sm-3
-                  button#addClassifyBtn.am-btn.am-btn-warning.am-btn-sm.tpl-btn-bg-color-warning(type="button")
-                    i.am-icon-plus.mr-5
-                    | 新增分类
+                .am-u-sm-9
+                  select.cf-select(data-am-selected="{searchBox:2}",style="display:none",name="classifyName",required,value="#{accountBook.classifyName}")
+                //- .am-u-sm-3
+                //-   button#addClassifyBtn.am-btn.am-btn-warning.am-btn-sm.tpl-btn-bg-color-warning(type="button")
+                //-     i.am-icon-plus.mr-5
+                //-     | 新增分类
               .am-form-group
                 label.am-u-sm-3.am-form-label
                   | 费用
-                  //- span.tpl-form-line-small-title price
                 .am-u-sm-9
-                  input.tpl-form-input(type="number",name="price",required)
+                  input.tpl-form-input(type="number",name="price",required,value="#{accountBook.price}")
                   small 请豪气地写下巨款~~~
               .am-form-group
                 label.am-u-sm-3.am-form-label
                   | 时间
-                  //- span.tpl-form-line-small-title Time
                 .am-u-sm-9
-                  input.am-form-field.tpl-form-no-bg(data-date-format="yyyy-mm-dd hh:ii",readonly="",name="recordDate",required)
+                  input.am-form-field.tpl-form-no-bg(data-date-format="yyyy-mm-dd hh:ii",readonly="",name="recordDate",required,value="#{accountBook.recordTime}")
                   small 记住时间很重要哦~~~
-              //- .am-form-group
-              //-   label.am-u-sm-3.am-form-label
-              //-     | 封面图
-              //-     span.tpl-form-line-small-title Images
-              //-   .am-u-sm-9
-              //-     .am-form-group.am-form-file
-              //-       .tpl-form-file-img
-              //-         img(src="#{_base}/img/a5.png")
-              //-       button.am-btn.am-btn-danger.am-btn-sm
-              //-         i.am-icon-cloud-upload
-              //-         | 添加封面图片
-              //-       input(type="file",multiple="")
               .am-form-group
                 label.am-u-sm-3.am-form-label 账户
                 .am-u-sm-9
-                  select(data-am-selected,name="payType")
+                  select(data-am-selected,name="payType",value="#{accountBook.payType}")
                     option(value="现金",selected) 现金
                     option(value="信用卡") 信用卡
                     option(value="储蓄卡") 储蓄卡
@@ -74,11 +60,11 @@ block content
               .am-form-group
                 label.am-u-sm-3.am-form-label 备注
                 .am-u-sm-9
-                  textarea(rows="5",style="border:1px solid #ccc;",name="remarks")
+                  textarea(rows="5",style="border:1px solid #ccc;",name="remarks",value="#{accountBook.remarks}")
               .am-form-group
                 input(type="hidden",name="_csrf",value="#{_csrf}")
                 .am-u-sm-9.am-u-sm-push-3
-                  button.am-btn.am-btn-primary.tpl-btn-bg-color-success(type="submit") 保存
+                  button.am-btn.am-btn-primary.tpl-btn-bg-color-success(type="submit") 更新
                   a.am-btn.am-btn-default.tpl-btn-bg-color-default(href="#{_base}/backend/accountBook") 取消
   #classifyPrompt.am-modal.am-modal-prompt
     .am-modal-dialog
@@ -88,4 +74,3 @@ block content
       .am-modal-footer
         span.am-modal-btn.am-btn-default(data-am-modal-cancel,style="color:#fff;") 取消
         span.am-modal-btn.am-btn-secondary(data-am-modal-confirm,style="color:#fff;")  新增
-

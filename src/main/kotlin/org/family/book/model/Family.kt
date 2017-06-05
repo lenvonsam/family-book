@@ -6,10 +6,6 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 
 @Entity
-class Family( var name: String, var creator: String) : BaseModel() {
+class Family(var name: String, var creator: String,@Id  @GeneratedValue(strategy = GenerationType.AUTO) val id: Int? = null) : BaseModel() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	val id: Int = -1
-	
 }

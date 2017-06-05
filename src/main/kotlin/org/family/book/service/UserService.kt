@@ -8,10 +8,16 @@ import org.springframework.stereotype.Service
 @Service
 class UserService {
 
-  @Autowired
-  lateinit var userRepo: UserRepository
+	@Autowired
+	lateinit var userRepo: UserRepository
 
-  fun loginByPhoneAndPassword(phone:String,password:String): User? {
-    return userRepo.findByPhoneAndPassword(phone,password)
-  }
+	fun loginByPhoneAndPassword(phone: String, password: String): User? {
+		return userRepo.findByPhoneAndPassword(phone, password)
+	}
+
+	fun findByOne(id: Int): User = userRepo.findOne(id)
+	
+	fun save(u:User)  {
+		userRepo.save(u)
+	}
 }

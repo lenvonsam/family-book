@@ -1,80 +1,63 @@
 extends ../layout/basic.jade
+append js
+  script(src="#{_base}/js/accountbookindex.js")
 
 block content
   .row-content.am-cf
+    input(type="hidden",name="userid",value="#{currentUser.id}")
+    input(type="hidden",name="familyid",value="#{currentUser.choosedFamily.id}")
+    input(type="hidden",name="baseUrl",value="#{_base}")
+
     .row
       .am-u-sm-12.am-u-md-12.am-u-lg-12
         .widget.am-cf
           .widget-head.am-cf
-            .widget-title.am-cf 文字列表
+            .widget-title.am-cf 账本列表
           .widget-body.am-fr
             .am-u-sm-12.am-u-md-6.am-u-lg-6
               .am-form-group
                 .am-btn-group.am-btn-group-xs
-                  a.am-btn.am-btn-default.am-btn-success(href="javascript:;")
-                    span.am-icon-plus
+                  a.am-btn.am-btn-default.am-btn-success(href="#{_base}/backend/accountBook/new")
+                    span.am-icon-plus.mr-5
                     | 新增
                   a.am-btn.am-btn-default.am-btn-secondary
-                    span.am-icon-save
-                    | 保存
-                  a.am-btn.am-btn-default.am-btn-warning
-                    span.am-icon-archive
-                    | 审核
+                    span.am-icon-file-excel-o.mr-5
+                    | 导出
             .am-u-sm-12.am-u-md-6.am-u-lg-3
               .am-form-group.tpl-table-list-select
-                select(data-am-selected="{btnSize:'sm'}")
-                  option(value="opiton1") 所有类别
-                  option(value="option2") IT业界
-                  option(value="option3") 数码产品
-                  option(value="option2") 超级本
+                select#abSelect(data-am-selected="{btnSize:'sm'}")
+                  option(value="all") 全部
+                  option(value="支出") 支出
+                  option(value="收入") 收入
             .am-u-sm-12.am-u-md-6.am-u-lg-3
               .am-input-group.am-input-group-sm.tpl-form-border-form.cl-p
-                input.am-form-field(type="text")
+                input#abSearch.am-form-field(type="text")
                 span.am-input-group-btn
                   button.am-btn.am-btn-default.am-btn-success.tpl-table-list-field.am-icon-search
             .am-u-sm-12
               table.am-table.am-table-compact.am-table-striped.tpl-table-black(width="100%")
                 thead
                   tr
-                    th 文章标题
-                    th 作者
+                    th 分类
+                    th 内容
                     th 时间
+                    th 金额
+                    th 账户
                     th 操作
                 tbody
-                  tr.gradeX
-                    td Amaze UI 模式窗口
-                    td 张鹏飞
-                    td 2016-09-26
-                    td
-                      .tpl-table-black-operation
-                        a(href="javascript:;")
-                          i.am-icon-pencil
-                          | 编辑
-                        a.tpl-table-black-operation-del.ml-5(href="javascript:;")
-                          i.am-icon-trash
-                          | 删除
-                  tr.even.gradeC
-                    td 有适配微信小程序的计划吗
-                    td 天纵之人
-                    td 2016-01-30
-                    td
-                      .tpl-table-black-operation
-                        a(href="javascript:;")
-                          i.am-icon-pencil
-                          | 编辑
-                        a.tpl-table-black-operation-del.ml-5(href="javascript:;")
-                          i.am-icon-trash
-                          | 删除
+
             .am-u-lg-12.am-cf
-              .am-fr
-                ul.am-pagination.tpl-pagination
+              .am-u-sm-4.am-u-lg-3(style="line-height:74px;")
+                span 共
+                span.pagIndex 1
+                span /
+                span#totalPage 12
+                span 页
+              .am-u-sm-8.am-u-lg-9.am-cf
+                ul.am-pagination.tpl-pagination.am-fr
                   li.am-disabled
                     a(href="#") «
                   li.am-active
-                    a(href="#") 1
-                  li
-                    a(href="#") 2
+                    a.pagIndex(href="#") 1
                   li
                     a(href="#") »
-
-

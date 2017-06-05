@@ -31,7 +31,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 	@Throws(Exception::class)
 	override fun configure(http: HttpSecurity) {
 		http.authorizeRequests()
-				.antMatchers("/api/**", "/error", "/backend/**", "/js/**", "/css/**", "/i/**", "/img/**", "/fonts/**").permitAll()
+				.antMatchers("/api/**", "/error",  "/js/**", "/css/**", "/i/**", "/img/**", "/fonts/**").permitAll()
 //				.antMatchers("/users/**").hasAuthority("ADMIN")
 				.anyRequest().fullyAuthenticated()
 				.and().csrf()

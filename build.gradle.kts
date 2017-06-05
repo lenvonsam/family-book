@@ -32,7 +32,6 @@ configure<JavaPluginConvention> {
 }
 
 repositories {
-
 	mavenLocal()
 	jcenter()
 	mavenCentral()
@@ -45,7 +44,8 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-data-jpa")
 	compile("org.springframework.boot:spring-boot-starter-security")
 	compile("mysql:mysql-connector-java")
-	compile("com.domingosuarez.boot:spring-boot-starter-jade4j:0.3.1")
+	compile("com.domingosuarez.boot:spring-boot-starter-jade4j:0.3.0")
+	compile("org.bouncycastle:bcprov-jdk16:1.46")
 	compile("cn.leancloud:java-sdk:0.1.+")
 	compile("com.taobao:taobao-sdk-java-auto:1.0.0")
 	compile("nl.komponents.kovenant:kovenant:3.3.0")
