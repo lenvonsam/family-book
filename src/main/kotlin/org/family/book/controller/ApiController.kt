@@ -1,18 +1,23 @@
 package org.family.book.controller
 
+import com.alibaba.fastjson.JSONObject
 import org.apache.commons.codec.binary.Base64
 import org.family.book.model.Classify
+import org.family.book.model.User
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.ArrayList
 import java.util.HashMap
-import com.alibaba.fastjson.JSONObject
 
 //所有api接口
 @RestController
 @RequestMapping("api")
 class ApiController : BasicController() {
+
+	private val log = LoggerFactory.getLogger(ApiController::class.java)
 
 	@GetMapping("signGetCode")
 	fun signGetCode(phone: String): Map<String, Any> {
@@ -92,7 +97,13 @@ class ApiController : BasicController() {
 	fun getAccountClassifyList(familyId: Int, userId: Int, type: String): Map<String, Any> {
 		var result = HashMap<String, Any>()
 		result.put("returnCode", 0)
-		result.put("classifyList", classifyService.listByFamilyUser(userService.findByOne(userId), familyService.findByOne(familyId), type))
+		val list = classifyService.listByFamilyUser(userService.findByOne(userId), familyService.findByOne(familyId), type)
+		result.put("classifyList", list)
+		val nameArray = ArrayList<String>()
+		list.map { c ->
+			nameArray.add(c.name)
+		}
+		result.put("names", nameArray)
 		return result
 	}
 
@@ -120,7 +131,7 @@ class ApiController : BasicController() {
 		var word = if (req.getParameter("word") === null) "" else "%" + req.getParameter("word") + "%"
 		println("search word:>>${word}")
 		val user = userService.findByOne(userId)
-		return classifyService.getClassifyListPg(user.id, user.choosedFamily.id!!, currentPage, type, word)
+		return classifyService.getClassifyListPg(user.id, user.choosedFamily?.id!!, currentPage, type, word)
 	}
 
 	//更新账本分类
@@ -136,20 +147,68 @@ class ApiController : BasicController() {
 	fun wxUserLogin(code: String, encryptedData: String, iv: String): Map<String, Any> {
 		var result = HashMap<String, Any>()
 		val sessionkey = wxMinService.getSessionKey(code)
-		println("sessionkey:>>>>>$sessionkey")
 		val sessionObj = JSONObject.parseObject(sessionkey)
-		println("sesskey:>>>>${sessionObj.get("session_key").toString()}")
-		println("encrypedData:>>>$encryptedData")
-		println("iv:>>>$iv")
-		println("byte iv length:>>${Base64.decodeBase64(iv.replace(" ","+")).size}")
-		val wxDecrypt = wxMinService.wxaesDecrypt(Base64.decodeBase64(encryptedData.replace(" ", "+")), Base64.decodeBase64(sessionObj.get("session_key").toString()), Base64.decodeBase64(iv.replace(" ","+")));
+		val openid = sessionObj.getString("openid")
+		val currentUser = userService.findByOpenId(openid)
+		val wxDecrypt = wxMinService.wxaesDecrypt(Base64.decodeBase64(encryptedData.replace(" ", "+")), Base64.decodeBase64(sessionObj.get("session_key").toString()), Base64.decodeBase64(iv.replace(" ", "+")));
 		if (wxDecrypt.size > 0) {
 			var resultResp = String(wxMinService.WxPKCS7Decode(wxDecrypt))
-			println("--------result:>>$resultResp")
-			var resultObj  = JSONObject.parseObject(resultResp)
-			println(resultObj.get("openId").toString())
+			var resultObj = JSONObject.parseObject(resultResp)
+			if (currentUser == null) {
+				log.info("=========== create new User ================")
+				// 创建用户
+				var newUser = User(resultObj.getString("nickName"))
+				newUser.avatarUrl = resultObj.getString("avatarUrl")
+				newUser.gender = if (resultObj.getString("gender").equals("1")) "男" else "女"
+				newUser.openId = openid
+				userService.save(newUser)
+				if (newUser.id > 0) {
+					result.put("userid", newUser.id)
+				}
+				result.put("needCreateFamily", 1)
+			} else {
+				// 更新用户
+				log.info("========== update user =================")
+				currentUser.avatarUrl = resultObj.getString("avatarUrl")
+				currentUser.gender = if (resultObj.getString("gender").equals("1")) "男" else "女"
+				currentUser.nickname = resultObj.getString("nickName")
+				userService.save(currentUser)
+				var f = currentUser.choosedFamily
+				result.put("userid", currentUser.id)
+				result.put("needCreateFamily", if (f == null) 1 else 0)
+				result.put("familyName", f!!.name)
+				result.put("familyId", f.id.toString())
+			}
+			result.put("returnCode", 0)
+		} else {
+			log.error("访问加密异常")
+			result.put("returnCode", -1)
+			result.put("errMsg", "非法的访问")
 		}
-		result.put("returnCode", 0)
+		return result
+	}
+
+	// 获取根据用户openid获取其账本列表
+	@GetMapping("wxMinFamilyList")
+	fun wxMinFamilyList(userid: Int): Map<String, Any> = familyService.familyByOpenId(userid)
+
+	// 更新选择账本
+	@PostMapping("chooseFamily")
+	fun chooseFamily(familyId: Int, userId: Int): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		try {
+			familyService.updateFamilyChoosed(userId, familyId)
+			var currentUsr = userService.findByOne(userId)
+			val family = familyService.findByOne(familyId)
+			currentUsr.choosedFamily = family
+			userService.save(currentUsr)
+			result.put("returnCode", 0)
+			result.put("familyId", family.id.toString())
+			result.put("familyName", family.name)
+		} catch(e: Exception) {
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
+		}
 		return result
 	}
 

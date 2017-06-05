@@ -18,7 +18,7 @@ class ClassifyService {
 
 	fun save(obj: Classify, currentUser: User): Boolean {
 		obj.user = currentUser
-		obj.family = currentUser.choosedFamily
+		obj.family = currentUser.choosedFamily!!
 		classifyRepo.save(obj)
 		if (obj.id > 0) return true else return false
 	}

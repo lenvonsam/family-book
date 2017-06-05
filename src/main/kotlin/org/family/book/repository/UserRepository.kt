@@ -9,4 +9,6 @@ interface UserRepository : CrudRepository<User, Int> {
 	fun findByPhoneAndPassword(phone: String, password: String): User?
 
 	fun findByPhoneAndEnable(phone: String, enable: Int): User?
+
+	fun findByOpenId(openid: String): User?
 }

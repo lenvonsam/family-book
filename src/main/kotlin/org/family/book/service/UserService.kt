@@ -16,8 +16,10 @@ class UserService {
 	}
 
 	fun findByOne(id: Int): User = userRepo.findOne(id)
-	
-	fun save(u:User)  {
+
+	fun save(u: User) {
 		userRepo.save(u)
 	}
+
+	fun findByOpenId(openid: String): User? = userRepo.findByOpenId(openid)
 }

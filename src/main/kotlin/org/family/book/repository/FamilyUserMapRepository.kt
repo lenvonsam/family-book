@@ -7,8 +7,14 @@ import org.springframework.data.repository.CrudRepository
 
 interface FamilyUserMapRepository : CrudRepository<FamilyUserMap, Int> {
 
-	@Query(value = "select * from v_family_user where phone=?1 order by default_choosed desc", nativeQuery = true)
+	@Query(value = "select * from v_family_user where phone=?1 and is_show = true order by default_choosed desc", nativeQuery = true)
 	fun listByUser(phone: String): List<Array<Any>>
+
+	@Query(value = "select * from v_family_user where user_id=?1 and is_show = true order by default_choosed desc", nativeQuery = true)
+	fun listByUserId(userid: Int): List<Array<Any>>
+
+	@Query(value = "select * from v_family_user where user_id=?1 and family_id=?2 and is_show = true order by default_choosed desc", nativeQuery = true)
+	fun listByUserAndFamilyId(userid: Int, familyid: Int): List<Array<Any>>
 
 	@Modifying
 	@Query(value = "update family_user_map set default_choosed = 0 where user_id=?1", nativeQuery = true)
@@ -17,4 +23,6 @@ interface FamilyUserMapRepository : CrudRepository<FamilyUserMap, Int> {
 	@Modifying
 	@Query(value = "update family_user_map set default_choosed = 1 where user_id=?1 and family_id=?2", nativeQuery = true)
 	fun updateFamilyChoose(userId: Int, familyId: Int)
+
+
 }

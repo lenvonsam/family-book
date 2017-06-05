@@ -35,7 +35,7 @@ class AccountBookController : BasicController() {
 	public fun pageCreate(ab: AccountBook, recordDate: String): String {
 		//设置账户相关信息
 		val user = req.session.getAttribute("currentUser") as User
-		ab.currentFamily = user.choosedFamily
+		ab.currentFamily = user.choosedFamily!!
 		ab.currentUser = user
 		ab.owerName = user.nickname
 		//string to timeStamp
