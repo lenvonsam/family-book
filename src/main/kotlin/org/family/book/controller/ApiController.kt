@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.ArrayList
 import java.util.HashMap
+import org.family.book.model.AccountBook
 
 //所有api接口
 @RestController
@@ -209,6 +210,17 @@ class ApiController : BasicController() {
 			result.put("returnCode", -1)
 			result.put("errMsg", e.message!!)
 		}
+		return result
+	}
+
+	//创建账本
+	@PostMapping("createAccountBook")
+	fun createAccountBook(userid: Int, ab: AccountBook, recordDate:String): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		log.info(ab.payType)
+		val u = userService.findByOne(userid)
+		ab.currentFamily = u.choosedFamily!!
+//		ab.currentUser = u
 		return result
 	}
 
