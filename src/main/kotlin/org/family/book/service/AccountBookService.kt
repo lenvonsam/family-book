@@ -22,6 +22,10 @@ class AccountBookService {
 		return abRepo.findOne(id)
 	}
 
+	fun delObj(ab: AccountBook) {
+		abRepo.delete(ab)
+	}
+
 	fun getAccountBookListPg(userId: Int, familyId: Int, currentPage: Int, type: String = "", word: String = ""): Map<String, Any> {
 		var result = HashMap<String, Any>()
 		var pageSize: Int = 10
@@ -46,4 +50,14 @@ class AccountBookService {
 		result.put("abList", list)
 		return result
 	}
+
+	fun findMonthRecords(time: String, familyid: Int, userid: Int) = abRepo.findMonthRecords(time, familyid, userid)
+
+	fun sumMonthRecords(time: String, familyid: Int, userid: Int, type: String) = abRepo.sumMonthRecords(time, familyid, userid, type)
+
+	fun getYearData(familyId: Int, yearDesc: String) = abRepo.getYearData(familyId, yearDesc)
+
+	fun getYearDataTotal(familyId: Int, yearDesc: String) = abRepo.getYearDataTotal(familyId, yearDesc)
+
+	fun getMonthClassifies(type: String, familyid: Int, beginDate: String, endDate: String) = abRepo.getMonthClassifies(type, familyid, beginDate, endDate)
 }

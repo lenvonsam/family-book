@@ -18,6 +18,6 @@ open class InterceptorConfig : WebMvcConfigurerAdapter() {
 
 	override fun addInterceptors(registry: InterceptorRegistry) {
 
-		registry.addInterceptor(csrfInterceptor).addPathPatterns("/**")
+		registry.addInterceptor(csrfInterceptor).addPathPatterns("/**").excludePathPatterns("/api/**")
 	}
 }

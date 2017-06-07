@@ -2,6 +2,7 @@ package org.family.book.controller
 
 import com.alibaba.fastjson.JSONObject
 import org.apache.commons.codec.binary.Base64
+import org.family.book.model.AccountBook
 import org.family.book.model.Classify
 import org.family.book.model.User
 import org.slf4j.LoggerFactory
@@ -9,9 +10,11 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.HashMap
-import org.family.book.model.AccountBook
+import javax.servlet.http.HttpServletRequest
 
 //所有api接口
 @RestController
@@ -215,13 +218,168 @@ class ApiController : BasicController() {
 
 	//创建账本
 	@PostMapping("createAccountBook")
-	fun createAccountBook(userid: Int, ab: AccountBook, recordDate:String): Map<String, Any> {
+	fun createAccountBook(userid: Int, ab: AccountBook, recordDate: String): Map<String, Any> {
 		var result = HashMap<String, Any>()
 		log.info(ab.payType)
-		val u = userService.findByOne(userid)
-		ab.currentFamily = u.choosedFamily!!
-//		ab.currentUser = u
+		try {
+			val u = userService.findByOne(userid)
+			ab.currentFamily = u.choosedFamily!!
+			ab.currentUser = u
+			ab.owerName = u.nickname
+			val sdf = SimpleDateFormat("yyyy-MM-dd")
+			val recordTime = Timestamp(sdf.parse(recordDate).time)
+			ab.recordTime = recordTime
+			accountBookService.save(ab)
+			result.put("returnCode", 0)
+		} catch(e: Exception) {
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
+		}
 		return result
 	}
 
+	//更新账本
+	@PostMapping("updateAccountBook")
+	fun updateAccountBook(userid: Int, ab: AccountBook, recordDate: String, id: String): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		var originAb = accountBookService.findOne(Integer.parseInt(id))
+		try {
+			val u = userService.findByOne(userid)
+			originAb.owerName = u.nickname
+			val sdf = SimpleDateFormat("yyyy-MM-dd")
+			val recordTime = Timestamp(sdf.parse(recordDate).time)
+			originAb.recordTime = recordTime
+			originAb.price = ab.price
+			originAb.classifyName = ab.classifyName
+			originAb.payType = ab.payType
+			originAb.remarks = ab.remarks
+			accountBookService.save(originAb)
+			result.put("returnCode", 0)
+		} catch(e: Exception) {
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
+		}
+		return result
+	}
+
+	// 删除单个记录
+	@PostMapping("accountbookDel")
+	fun accountbookDel(userid: Int, abid: Int): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		//判断是不是当前用户操作
+		val ab = accountBookService.findOne(abid)
+		if (ab.currentUser.id == userid) {
+			accountBookService.delObj(ab)
+			result.put("returnCode", 0)
+		} else {
+			result.put("returnCode", -1)
+			result.put("errMsg", "无效请求")
+		}
+		return result
+	}
+
+	// 获取一个月的账本情况
+	@GetMapping("getMonthAbList")
+	fun getMonthAbList(userid: Int, req: HttpServletRequest): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		try {
+			var fixTime: String = req.getParameter("recordTime")
+			var u = userService.findByOne(userid)
+			var f = u.choosedFamily!!
+			var list: List<AccountBook> = accountBookService.findMonthRecords(fixTime, f.id!!, u.id)
+			var dsdf = SimpleDateFormat("yyyy-MM-dd")
+			var monthRecords = list.groupBy { t -> dsdf.format(t.recordTime) }
+			var subMonthRecord = HashMap<String, Any>()
+			monthRecords.keys.forEach { s ->
+				var sl = monthRecords.get(s)
+				var slpay = sl?.filter { sp -> sp.recordType == "支出" }?.sumByDouble { sprice -> sprice.price }
+				var slReceiver = sl?.filter { sp -> sp.recordType == "收入" }?.sumByDouble { sprice -> sprice.price }
+				var prMap = HashMap<String, Any>()
+				prMap.put("pay", slpay!!)
+				prMap.put("receiver", slReceiver!!)
+				subMonthRecord.put(s, prMap)
+			}
+			result.put("returnCode", 0)
+			val totalPay = accountBookService.sumMonthRecords(fixTime, f.id!!, u.id, "支出")
+			val totalReceive = accountBookService.sumMonthRecords(fixTime, f.id!!, u.id, "收入")
+			result.put("payMonthTotal", if(totalPay == null) 0 else totalPay)
+			result.put("receiveMonthTotal", if(totalReceive == null) 0 else totalReceive)
+			result.put("monthDate", "${fixTime.substring(6)}/${fixTime.substring(0, 4)}")
+			result.put("monthRecords", monthRecords)
+			result.put("dayRecords", subMonthRecord)
+		} catch(e: Exception) {
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
+		}
+
+		return result
+	}
+
+	//获取一年的线型报表信息
+	@GetMapping("getYearLineData")
+	fun getYearLineData(familyid: Int, year: String): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		val list = accountBookService.getYearData(familyid, year)
+		var monthArray = Array(12, { i -> i + 1 })
+		var payArray = Array(12, { 0.00 })
+		var receArray = Array(12, { 0.00 })
+		var balanceArray = Array(12, { 0.00 })
+		list.map { arr ->
+			var month: Int = Integer.parseInt(arr[0].toString())
+			var pay = arr[1].toString().toDouble()
+			var receive = arr[2].toString().toDouble()
+			var monthIndex = monthArray.indexOf(month)
+			payArray[monthIndex] = pay
+			receArray[monthIndex] = receive
+			balanceArray[monthIndex] = receive - pay
+		}
+		result.put("list", list)
+		result.put("payArr", payArray)
+		result.put("receiveArr", receArray)
+		result.put("balanceArr", balanceArray)
+		result.put("returnCode", 0)
+		result.put("listTotal", accountBookService.getYearDataTotal(familyid, year))
+		return result
+	}
+	
+	// 获取固定日期的报表信息
+	@GetMapping("getMonthPieData")
+	fun getMonthPieData(familyid:Int, type:String):Map<String,Any> {
+		var result = HashMap<String,Any>()
+		var beginDate = ""
+		var endDate = ""
+		if (req.getParameter("monthDate") != null) {
+			var sdf = SimpleDateFormat("yyyy-MM-dd")
+			var days = commService.firstAndEndOfMonth(sdf.parse(req.getParameter("monthDate")))
+			beginDate = days.get("beginDate").toString()
+			endDate = days.get("endDate").toString()
+		}
+		if(req.getParameter("beginDate") !=null && req.getParameter("endDate") != null) {
+			beginDate = req.getParameter("beginDate")
+			endDate = req.getParameter("endDate")
+		}
+		val list = accountBookService.getMonthClassifies(type,familyid,beginDate,endDate)
+		var mList:List<HashMap<String,Any>> = ArrayList<HashMap<String,Any>>()
+		list.map { l ->
+			var tem = HashMap<String,Any>()
+			tem.put("name", l[0])
+			tem.put("data", l[1])
+//			mList.
+		}
+		
+		return result
+	}
 }
+
+//fun main(args: Array<String>) {
+////	AVOSCloud.initialize("txQtqW5ROfawVxd8RgfAr3f0-gzGzoHsz", "6qmUf9FLjJEbUoXyeMB0TwhB", "EHG4S391TDinBFzXjjLtCtbs")
+//	val d = Calendar.getInstance()
+//	d.time = Date()
+//	d.set(Calendar.DAY_OF_MONTH,1)
+//	println(d.getTime())
+//	d.time = Date()
+//	d.add(Calendar.MONTH,1)
+//	d.set(Calendar.DATE,1)
+//	d.add(Calendar.DATE,-1)
+//	println(d.getTime())
+//}

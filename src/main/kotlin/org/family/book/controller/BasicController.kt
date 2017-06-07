@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import org.family.book.service.CommonService
 
 @Controller
 open class BasicController {
@@ -36,5 +37,8 @@ open class BasicController {
 
 	@Autowired
 	lateinit var wxMinService: WxMinService
+
+	@Autowired
+	lateinit var commService: CommonService
 
 }
