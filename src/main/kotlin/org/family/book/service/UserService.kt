@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 class UserService {
 
 	@Autowired
-	lateinit var userRepo: UserRepository
+	lateinit private var userRepo: UserRepository
 
 	fun loginByPhoneAndPassword(phone: String, password: String): User? {
 		return userRepo.findByPhoneAndPassword(phone, password)

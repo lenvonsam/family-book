@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.family.book.service.CommonService
+import org.family.book.service.MessageService
 
 @Controller
 open class BasicController {
@@ -37,6 +38,9 @@ open class BasicController {
 
 	@Autowired
 	lateinit var wxMinService: WxMinService
+
+	@Autowired
+	lateinit var msgService: MessageService
 
 	@Autowired
 	lateinit var commService: CommonService

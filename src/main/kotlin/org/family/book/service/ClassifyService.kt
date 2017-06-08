@@ -12,7 +12,7 @@ import java.util.HashMap
 class ClassifyService {
 
 	@Autowired
-	lateinit var classifyRepo: ClassifyRepository
+	lateinit private var classifyRepo: ClassifyRepository
 
 	fun listByFamilyUser(user: User, family: Family, type: String): List<Classify> = classifyRepo.findByUserAndFamilyAndType(user, family, type)
 

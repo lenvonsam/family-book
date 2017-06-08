@@ -17,16 +17,16 @@ import org.family.book.repository.ClassifyRepository
 @Service
 class FamilyService {
 	@Autowired
-	lateinit var familyRepo: FamilyRepository
+	lateinit private var familyRepo: FamilyRepository
 
 	@Autowired
-	lateinit var userRepo: UserRepository
+	lateinit private var userRepo: UserRepository
 
 	@Autowired
-	lateinit var classifyRepo: ClassifyRepository
+	lateinit private var classifyRepo: ClassifyRepository
 
 	@Autowired
-	lateinit var familyUserMapRepo: FamilyUserMapRepository
+	lateinit private var familyUserMapRepo: FamilyUserMapRepository
 
 	private var result = HashMap<String, Any>()
 
@@ -36,9 +36,10 @@ class FamilyService {
 		result = HashMap<String, Any>()
 		try {
 			var currentUser = userRepo.findOne(creatorId)
-			var f = familyRepo.isExistName(name)
+			var f = familyRepo.findByName(name)
 			if (f == null) {
 				var family = Family(name)
+				family.creator = currentUser
 				familyRepo.save(family)
 				println("family id:>>>${family.id}")
 				if (family.id!! > 0) {
@@ -117,4 +118,37 @@ class FamilyService {
 		familyUserMapRepo.resetFamilyChoosed(userid)
 		familyUserMapRepo.updateFamilyChoose(userid, familyid)
 	}
+
+	// 更改家庭名称
+	@Transactional
+	fun updateFamily(familyid: Int, familyName: String): HashMap<String, Any> {
+		var result = HashMap<String, Any>()
+		val f = familyRepo.findOne(familyid)
+		if (f.name != familyName) {
+			var ft = familyRepo.findByName(familyName)
+			if (ft == null) {
+				f.name = familyName
+				familyRepo.save(f)
+				result.put("returnCode", 0)
+			} else {
+				result.put("returnCode", -1)
+				result.put("errMsg", "账本名称已存在")
+			}
+		} else {
+			result.put("returnCode", 0)
+		}
+		return result
+	}
+
+	@Transactional
+	@Throws(Exception::class)
+	fun delFmaily(id: Int) {
+		var fmp = familyUserMapRepo.findOne(id)
+		var f = familyRepo.findOne(fmp.family.id)
+		f.isShow = false
+		familyRepo.save(f)
+		familyUserMapRepo.updateChooseByFamilyId(f.id!!)
+	}
+
+	fun searchFamily(userid: Int, searchVal: String) = familyRepo.searchFamily(userid, "%$searchVal%")
 }

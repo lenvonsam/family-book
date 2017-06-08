@@ -10,7 +10,7 @@ import java.util.HashMap
 class AccountBookService {
 
 	@Autowired
-	lateinit var abRepo: AccountBookRepository
+	lateinit  private var abRepo: AccountBookRepository
 
 	fun save(ab: AccountBook): Boolean {
 		abRepo.save(ab)

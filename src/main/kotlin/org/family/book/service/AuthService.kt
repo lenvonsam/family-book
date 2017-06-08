@@ -13,7 +13,7 @@ import org.family.book.repository.UserRepository
 class AuthService : UserDetailsService {
 
 	@Autowired
-	lateinit var userRepo: UserRepository
+	lateinit private var userRepo: UserRepository
 
 	@Throws(Exception::class)
 	override fun loadUserByUsername(username: String?): User {

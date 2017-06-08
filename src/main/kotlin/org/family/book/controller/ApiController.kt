@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject
 import org.apache.commons.codec.binary.Base64
 import org.family.book.model.AccountBook
 import org.family.book.model.Classify
+import org.family.book.model.Message
 import org.family.book.model.User
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
@@ -85,9 +86,46 @@ class ApiController : BasicController() {
 		return familyService.createFamily(name, Integer.parseInt(userid))
 	}
 
+	@PostMapping("updateFamilyName")
+	fun updateFamilyName(name: String, familyId: String): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		try {
+			result = familyService.updateFamily(familyId.toInt(), name)
+		} catch(e: Exception) {
+			log.error("family update error:>>>", e)
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
+		}
+		return result
+	}
+
+	@PostMapping("delFamily")
+	fun delFamily(id: Int): Map<String, Any> {
+		log.info("v_fb_mapperid:>>$id")
+		var result = HashMap<String, Any>()
+		try {
+			familyService.delFmaily(id)
+			result.put("returnCode", 0)
+		} catch(e: Exception) {
+			log.error("delfamily error:>>", e)
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
+		}
+
+		return result
+	}
+
 	@PostMapping("joinFamily")
 	fun joinFamily(familyId: String, addMember: String): Map<String, Any> {
 		return avosService.joinFamily(familyId, addMember)
+	}
+
+	@GetMapping("searchFamily")
+	fun searchFamily(userid: Int, searchVal: String): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		result.put("returnCode", 0)
+		result.put("families", familyService.searchFamily(userid, searchVal))
+		return result
 	}
 
 	//查询一个家庭里面的成员
@@ -179,9 +217,9 @@ class ApiController : BasicController() {
 				userService.save(currentUser)
 				var f = currentUser.choosedFamily
 				result.put("userid", currentUser.id)
-				result.put("needCreateFamily", if (f == null) 1 else 0)
-				result.put("familyName", f!!.name)
-				result.put("familyId", f.id.toString())
+				result.put("needCreateFamily", if (f == null || f.isShow == false) 1 else 0)
+				result.put("familyName", if (f == null) "" else f.name)
+				result.put("familyId", if (f == null) 0 else f.id.toString())
 			}
 			result.put("returnCode", 0)
 		} else {
@@ -302,8 +340,8 @@ class ApiController : BasicController() {
 			result.put("returnCode", 0)
 			val totalPay = accountBookService.sumMonthRecords(fixTime, f.id!!, u.id, "支出")
 			val totalReceive = accountBookService.sumMonthRecords(fixTime, f.id!!, u.id, "收入")
-			result.put("payMonthTotal", if(totalPay == null) 0 else totalPay)
-			result.put("receiveMonthTotal", if(totalReceive == null) 0 else totalReceive)
+			result.put("payMonthTotal", if (totalPay == null) 0 else totalPay)
+			result.put("receiveMonthTotal", if (totalReceive == null) 0 else totalReceive)
 			result.put("monthDate", "${fixTime.substring(6)}/${fixTime.substring(0, 4)}")
 			result.put("monthRecords", monthRecords)
 			result.put("dayRecords", subMonthRecord)
@@ -341,32 +379,89 @@ class ApiController : BasicController() {
 		result.put("listTotal", accountBookService.getYearDataTotal(familyid, year))
 		return result
 	}
-	
+
 	// 获取固定日期的报表信息
 	@GetMapping("getMonthPieData")
-	fun getMonthPieData(familyid:Int, type:String):Map<String,Any> {
-		var result = HashMap<String,Any>()
+	fun getMonthPieData(familyid: Int, type: String): Map<String, Any> {
+		var result = HashMap<String, Any>()
 		var beginDate = ""
 		var endDate = ""
-		if (req.getParameter("monthDate") != null) {
-			var sdf = SimpleDateFormat("yyyy-MM-dd")
-			var days = commService.firstAndEndOfMonth(sdf.parse(req.getParameter("monthDate")))
-			beginDate = days.get("beginDate").toString()
-			endDate = days.get("endDate").toString()
+		try {
+			if (req.getParameter("monthDate") != null) {
+				var sdf = SimpleDateFormat("yyyy-MM-dd")
+				var days = commService.firstAndEndOfMonth(sdf.parse(req.getParameter("monthDate")))
+				beginDate = days.get("beginDate").toString()
+				endDate = days.get("endDate").toString()
+			}
+			if (req.getParameter("beginDate") != null && req.getParameter("endDate") != null) {
+				beginDate = req.getParameter("beginDate")
+				endDate = req.getParameter("endDate")
+			}
+			val list = accountBookService.getMonthClassifies(type, familyid, beginDate, endDate)
+			var mList = ArrayList<HashMap<String, Any>>()
+			list.map { l ->
+				var tem = HashMap<String, Any>()
+				tem.put("name", l[0])
+				tem.put("data", l[1])
+				mList.add(tem)
+			}
+			result.put("returnCode", 0)
+			result.put("pieData", mList)
+			result.put("pieList", list)
+			result.put("startDate", "${beginDate.substring(5, 7)}.${beginDate.substring(8)}")
+			result.put("endDate", "${endDate.substring(5, 7)}.${endDate.substring(8)}")
+		} catch(e: Exception) {
+			log.error("error:>>>", e)
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
 		}
-		if(req.getParameter("beginDate") !=null && req.getParameter("endDate") != null) {
-			beginDate = req.getParameter("beginDate")
-			endDate = req.getParameter("endDate")
+		return result
+	}
+
+	//发送加入账本申请
+	@PostMapping("sendApplyFamilyMsg")
+	fun sendApplyFamilyMsg(userid: Int, creator: Int, familyId: Int): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		try {
+			var m = msgService.isExist(1, userid, creator, familyId)
+			if (m == null) {
+				val msg = Message(1, userid, creator)
+				msg.familyId = familyId
+				msgService.save(msg)
+				result.put("returnCode", 0)
+			} else {
+				result.put("returnCode", -1)
+				var errMsg = "正在审核中，请耐心等待"
+				if (m.status.equals("同意")) {
+					errMsg = "已加入该账本无需再次加入"
+				} else if (m.status.equals("拒绝")) {
+					errMsg = "对方拒绝了您的请求，无法再次加入"
+				}
+				result.put("errMsg", errMsg)
+			}
+		} catch(e: Exception) {
+			log.error("sendApplyFailyMsg error:>>", e)
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
 		}
-		val list = accountBookService.getMonthClassifies(type,familyid,beginDate,endDate)
-		var mList:List<HashMap<String,Any>> = ArrayList<HashMap<String,Any>>()
-		list.map { l ->
-			var tem = HashMap<String,Any>()
-			tem.put("name", l[0])
-			tem.put("data", l[1])
-//			mList.
-		}
-		
+		return result
+	}
+
+	// 获取用户消息未读数量
+	@GetMapping("getMsgUnreadCount")
+	fun getMsgUnreadCount(userid: Int): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		result.put("returnCode", 0)
+		result.put("count", msgService.unreadCount(userid))
+		return result
+	}
+
+	// 获取用户消息列表
+	@GetMapping("getMsgList")
+	fun getMsgList(userid: Int): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		result.put("returnCode", 0)
+		result.put("msgs", msgService.findMsgList(userid))
 		return result
 	}
 }
