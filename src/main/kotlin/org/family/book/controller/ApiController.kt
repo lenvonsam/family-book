@@ -16,6 +16,9 @@ import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.HashMap
 import javax.servlet.http.HttpServletRequest
+import javax.transaction.Transactional
+import org.family.book.model.FamilyUserMap
+import org.family.book.model.Feedback
 
 //所有api接口
 @RestController
@@ -125,6 +128,14 @@ class ApiController : BasicController() {
 		var result = HashMap<String, Any>()
 		result.put("returnCode", 0)
 		result.put("families", familyService.searchFamily(userid, searchVal))
+		return result
+	}
+
+	@GetMapping("getOneVFamily")
+	fun getOneVFamily(id: Int): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		result.put("returnCode", 0)
+		result.put("family", familyService.findVfamilyById(id))
 		return result
 	}
 
@@ -436,11 +447,41 @@ class ApiController : BasicController() {
 					errMsg = "已加入该账本无需再次加入"
 				} else if (m.status.equals("拒绝")) {
 					errMsg = "对方拒绝了您的请求，无法再次加入"
+				} else {
+					if (m.unread == 0) {
+						m.unread = 1
+						msgService.save(m)
+					}
 				}
 				result.put("errMsg", errMsg)
 			}
 		} catch(e: Exception) {
 			log.error("sendApplyFailyMsg error:>>", e)
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
+		}
+		return result
+	}
+
+	// 回复账本请求
+	@PostMapping("receiveApplyFamilyMsg")
+	@Transactional(rollbackOn = arrayOf(RuntimeException::class, Exception::class))
+	fun receiveApplyFamilyMsg(id: Int, type: String): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		try {
+			var msg = msgService.findOne(id)
+			msg.status = if (type.equals("agree")) "同意" else "拒绝"
+			if (msg.status.equals("同意")) {
+				// 创建关联关系
+				familyService.joinFamily(msg.familyId, msg.sender)
+			}
+			msgService.save(msg)
+			// 异步生产回复消息
+			msgService.generatorApplyReceiveMsg(msg)
+			result.put("returnCode", 0)
+			result.put("status", msg.status)
+		} catch(e: Exception) {
+			log.error("receiveApplyFamilyMsg error:>>>", e)
 			result.put("returnCode", -1)
 			result.put("errMsg", e.message!!)
 		}
@@ -464,17 +505,39 @@ class ApiController : BasicController() {
 		result.put("msgs", msgService.findMsgList(userid))
 		return result
 	}
-}
 
-//fun main(args: Array<String>) {
-////	AVOSCloud.initialize("txQtqW5ROfawVxd8RgfAr3f0-gzGzoHsz", "6qmUf9FLjJEbUoXyeMB0TwhB", "EHG4S391TDinBFzXjjLtCtbs")
-//	val d = Calendar.getInstance()
-//	d.time = Date()
-//	d.set(Calendar.DAY_OF_MONTH,1)
-//	println(d.getTime())
-//	d.time = Date()
-//	d.add(Calendar.MONTH,1)
-//	d.set(Calendar.DATE,1)
-//	d.add(Calendar.DATE,-1)
-//	println(d.getTime())
-//}
+	// 更新消息已读
+	@PostMapping("updateMsgReadStatus")
+	fun updateMsgReadStatus(msgId: Int): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		try {
+			var msg = msgService.findOne(msgId)
+			msg.unread = 0
+			msgService.save(msg)
+			result.put("returnCode", 0)
+		} catch(e: Exception) {
+			log.error("updatemsgReadStatus error:>>>", e)
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
+		}
+		return result
+	}
+
+	// 保存用户反馈信息
+	@PostMapping("/postFeedback")
+	fun postFeedback(feedback: Feedback, userid: Int): Map<String, Any> {
+		var result = HashMap<String, Any>()
+		try {
+			feedback.user = userService.findByOne(userid)
+			feedbackService.save(feedback)
+			// 异步发送邮件通知
+			mailService.fbsendTextMail("家帐用户返回意见", "<h4>反馈标题: ${feedback.title}</h4><h4>联系方式: ${feedback.contact}</h4><h4>反馈内容: ${feedback.content}</h4>")
+			result.put("returnCode", 0)
+		} catch(e: Exception) {
+			log.error("postfeedback error:>>", e)
+			result.put("returnCode", -1)
+			result.put("errMsg", e.message!!)
+		}
+		return result
+	}
+}

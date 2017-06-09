@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.HashMap
 import org.family.book.repository.ClassifyRepository
+import org.springframework.scheduling.annotation.EnableAsync
 
 @Service
+@EnableAsync
 class FamilyService {
 	@Autowired
 	lateinit private var familyRepo: FamilyRepository
@@ -111,6 +113,20 @@ class FamilyService {
 
 	fun findByOne(id: Int): Family = familyRepo.findOne(id)
 
+	//加入家庭
+	@Transactional
+	fun joinFamily(familyId: Int, user: Int) {
+		var u = userRepo.findOne(user)
+		var f = familyRepo.findOne(familyId)
+		var m = familyUserMapRepo.findByUserAndFamily(u, f)
+		if (m == null) {
+			var mapper = FamilyUserMap()
+			mapper.user = u
+			mapper.family = f
+			familyUserMapRepo.save(mapper)
+		}
+	}
+
 	// 更新选择家庭
 	@Transactional
 	@Throws(Exception::class)
@@ -151,4 +167,6 @@ class FamilyService {
 	}
 
 	fun searchFamily(userid: Int, searchVal: String) = familyRepo.searchFamily(userid, "%$searchVal%")
+
+	fun findVfamilyById(id: Int) = familyRepo.findVfamilyById(id)
 }

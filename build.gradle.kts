@@ -47,6 +47,7 @@ dependencies {
 	compile("com.domingosuarez.boot:spring-boot-starter-jade4j:0.3.0")
 	compile("org.bouncycastle:bcprov-jdk16:1.46")
 	compile("cn.leancloud:java-sdk:0.1.+")
+	compile("org.apache.commons:commons-email:1.4")
 	compile("com.taobao:taobao-sdk-java-auto:1.0.0")
 	compile("nl.komponents.kovenant:kovenant:3.3.0")
 	compile("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion")

@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import org.family.book.service.CommonService
 import org.family.book.service.MessageService
+import org.family.book.service.FeedbackService
+import org.family.book.service.MailService
 
 @Controller
 open class BasicController {
@@ -43,6 +45,12 @@ open class BasicController {
 	lateinit var msgService: MessageService
 
 	@Autowired
+	lateinit var feedbackService: FeedbackService
+
+	@Autowired
 	lateinit var commService: CommonService
+
+	@Autowired
+	lateinit var mailService: MailService
 
 }
