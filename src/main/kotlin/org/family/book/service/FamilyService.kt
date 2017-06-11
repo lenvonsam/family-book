@@ -168,5 +168,13 @@ class FamilyService {
 
 	fun searchFamily(userid: Int, searchVal: String) = familyRepo.searchFamily(userid, "%$searchVal%")
 
-	fun findVfamilyById(id: Int) = familyRepo.findVfamilyById(id)
+	fun findVfamilyById(id: Int, userid: Int): Any? {
+		var f = familyRepo.findOne(id)
+		var u = userRepo.findOne(userid)
+		if (familyUserMapRepo.findByUserAndFamily(u, f) == null) {
+			return familyRepo.findVfamilyById(id)
+		} else {
+			return null
+		}
+	}
 }

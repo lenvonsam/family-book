@@ -132,10 +132,16 @@ class ApiController : BasicController() {
 	}
 
 	@GetMapping("getOneVFamily")
-	fun getOneVFamily(id: Int): Map<String, Any> {
+	fun getOneVFamily(id: Int, userid: Int): Map<String, Any> {
 		var result = HashMap<String, Any>()
-		result.put("returnCode", 0)
-		result.put("family", familyService.findVfamilyById(id))
+		var f = familyService.findVfamilyById(id, userid)
+		if (f == null) {
+			result.put("returnCode", -1)
+			result.put("errMsg", "无法加入自己的项目")
+		} else {
+			result.put("returnCode", 0)
+			result.put("family", f)
+		}
 		return result
 	}
 

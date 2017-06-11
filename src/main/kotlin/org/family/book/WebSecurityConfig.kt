@@ -78,7 +78,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 			var uri = request.requestURI
 			println("uri:>>>>" + uri)
 			this.allowedUrls.map { url ->
-				if (uri.startsWith("/api")) {
+				if (uri.startsWith("${request.contextPath}/api")) {
 					return false
 				} else {
 					if (url.equals(uri)) return false

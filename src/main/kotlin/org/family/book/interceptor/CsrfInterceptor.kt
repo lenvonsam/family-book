@@ -15,8 +15,8 @@ class CsrfInterceptor : HandlerInterceptorAdapter() {
 
 	override fun preHandle(request: HttpServletRequest?, response: HttpServletResponse?, handler: Any?): Boolean {
 		var session = request!!.session
-		println(request.requestURI)
-		if (!("/backend/login".equals(request.requestURI)) && session != null && request.isRequestedSessionIdValid && session.getAttribute("currentUser") == null) {
+		log.info("csrf uri>>>>>" + request.requestURI + ";request contextpath:>>${request.contextPath}")
+		if (!("${request.contextPath}/backend/login".equals(request.requestURI)) && session != null && request.isRequestedSessionIdValid && session.getAttribute("currentUser") == null) {
 			log.info("validate user , then redirect to backlogin")
 			response?.sendRedirect(request.contextPath + "/backend/login")
 			return false
