@@ -10,7 +10,7 @@ import java.util.HashMap
 class AccountBookService {
 
 	@Autowired
-	lateinit  private var abRepo: AccountBookRepository
+	lateinit private var abRepo: AccountBookRepository
 
 	fun save(ab: AccountBook): Boolean {
 		abRepo.save(ab)
@@ -41,7 +41,8 @@ class AccountBookService {
 			totalCount = abRepo.findListCountByType(familyId, userId, type)
 			list = abRepo.findListByTypePg(familyId, userId, type, currentPage, pageSize)
 		} else {
-			totalCount = abRepo.findListCount(familyId, userId)
+			var totalResult = abRepo.findListCount(familyId, userId)
+			totalCount = if (totalResult == null) 0 else totalResult
 			list = abRepo.findListPg(familyId, userId, currentPage, pageSize)
 		}
 		val totalPage = if (totalCount.mod(pageSize) > 0) totalCount / pageSize + 1 else totalCount / pageSize
@@ -52,6 +53,8 @@ class AccountBookService {
 	}
 
 	fun findMonthRecords(time: String, familyid: Int, userid: Int) = abRepo.findMonthRecords(time, familyid, userid)
+
+	fun findMonthTotalRecords(time: String, familyid: Int) = abRepo.findMonthTotalRecords(time, familyid)
 
 	fun sumMonthRecords(time: String, familyid: Int, userid: Int, type: String) = abRepo.sumMonthRecords(time, familyid, userid, type)
 

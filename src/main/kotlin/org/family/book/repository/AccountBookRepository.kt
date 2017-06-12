@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query
 interface AccountBookRepository : CrudRepository<AccountBook, Int> {
 
 	@Query(value = "select count(*) from account_book where current_family_id=?1 and current_user_id=?2", nativeQuery = true)
-	fun findListCount(familyId: Int, userId: Int): Int
+	fun findListCount(familyId: Int, userId: Int): Int?
 
 	@Query(value = "select count(*) from account_book where current_family_id=?1 and current_user_id=?2 and record_type=?3", nativeQuery = true)
 	fun findListCountByType(familyId: Int, userId: Int, type: String): Int
@@ -32,6 +32,10 @@ interface AccountBookRepository : CrudRepository<AccountBook, Int> {
 
 	@Query(value = "select * from account_book where date_format(record_time,'%Y-%m') = ?1 and current_family_id=?2 and  current_user_id=?3 order by record_time desc", nativeQuery = true)
 	fun findMonthRecords(time: String, familyid: Int, userid: Int): List<AccountBook>
+	
+	
+	@Query(value = "select * from account_book where date_format(record_time,'%Y-%m') = ?1 and current_family_id=?2 order by record_time desc", nativeQuery = true)
+	fun findMonthTotalRecords(time: String, familyid: Int): List<AccountBook>
 
 	@Query(value = "select sum(price) from account_book where date_format(record_time,'%Y-%m') = ?1 and current_family_id=?2 and  current_user_id=?3 and record_type=?4 order by record_time desc", nativeQuery = true)
 	fun sumMonthRecords(time: String, familyid: Int, userid: Int, type: String): Float?

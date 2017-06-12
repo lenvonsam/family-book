@@ -341,7 +341,13 @@ class ApiController : BasicController() {
 			var fixTime: String = req.getParameter("recordTime")
 			var u = userService.findByOne(userid)
 			var f = u.choosedFamily!!
-			var list: List<AccountBook> = accountBookService.findMonthRecords(fixTime, f.id!!, u.id)
+			var list: List<AccountBook>
+			var type = req.getParameter("type")
+			if (type == null) {
+				list = accountBookService.findMonthRecords(fixTime, f.id!!, u.id)
+			} else {
+				list = accountBookService.findMonthTotalRecords(fixTime, f.id!!)
+			}
 			var dsdf = SimpleDateFormat("yyyy-MM-dd")
 			var monthRecords = list.groupBy { t -> dsdf.format(t.recordTime) }
 			var subMonthRecord = HashMap<String, Any>()

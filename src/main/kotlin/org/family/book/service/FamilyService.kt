@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.HashMap
 import org.family.book.repository.ClassifyRepository
 import org.springframework.scheduling.annotation.EnableAsync
+import org.family.book.repository.AccountBookRepository
 
 @Service
 @EnableAsync
@@ -29,6 +30,9 @@ class FamilyService {
 
 	@Autowired
 	lateinit private var familyUserMapRepo: FamilyUserMapRepository
+
+	@Autowired
+	lateinit private var abRepo: AccountBookRepository
 
 	private var result = HashMap<String, Any>()
 
@@ -124,6 +128,14 @@ class FamilyService {
 			mapper.user = u
 			mapper.family = f
 			familyUserMapRepo.save(mapper)
+			// 判断是否有账本信息
+			if (mapper.id > 0) {
+				var accountCount = abRepo.findListCount(f.id!!, u.id)
+				if (accountCount == null || accountCount < 5) {
+					//异步创建类
+					autoCreateFamilyClassify(f, u)
+				}
+			}
 		}
 	}
 
