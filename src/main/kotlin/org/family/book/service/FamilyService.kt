@@ -55,9 +55,9 @@ class FamilyService {
 					familyUserMap.family = family
 					familyUserMapRepo.save(familyUserMap)
 					// 判断是否是第一次创建，如果第一次创建默认选中
-					if (familyUserMap.id > 0) {
-						if (familyUserMapRepo.listByUserId(currentUser.id).size == 1) {
-							familyUserMapRepo.updateFamilyChoose(currentUser.id, family.id!!)
+					if (familyUserMap.id!! > 0) {
+						if (familyUserMapRepo.listByUserId(currentUser.id!!).size == 1) {
+							familyUserMapRepo.updateFamilyChoose(currentUser.id!!, family.id!!)
 							currentUser.choosedFamily = family
 							userRepo.save(currentUser)
 						}
@@ -129,8 +129,8 @@ class FamilyService {
 			mapper.family = f
 			familyUserMapRepo.save(mapper)
 			// 判断是否有账本信息
-			if (mapper.id > 0) {
-				var accountCount = abRepo.findListCount(f.id!!, u.id)
+			if (mapper.id!! > 0) {
+				var accountCount = abRepo.findListCount(f.id!!, u.id!!)
 				if (accountCount == null || accountCount < 5) {
 					//异步创建类
 					autoCreateFamilyClassify(f, u)

@@ -19,7 +19,7 @@ class FamilyController : BasicController() {
 	@ResponseBody
 	fun familyCreate(name: String, req: HttpServletRequest): Map<String, Any> {
 		var currentUser: User = req.session.getAttribute("currentUser") as User
-		return familyService.createFamily(name, currentUser.id)
+		return familyService.createFamily(name, currentUser.id!!)
 	}
 
 	@GetMapping("list")
@@ -36,7 +36,7 @@ class FamilyController : BasicController() {
 		var result = HashMap<String, Any>()
 		try {
 			val currentUser = req.session.getAttribute("currentUser") as User
-			familyService.updateFamilyChoosed(currentUser.id, familyId)
+			familyService.updateFamilyChoosed(currentUser.id!!, familyId)
 			currentUser.choosedFamily = familyService.findByOne(familyId)
 			userService.save(currentUser)
 			req.session.setAttribute("currentUser", currentUser)

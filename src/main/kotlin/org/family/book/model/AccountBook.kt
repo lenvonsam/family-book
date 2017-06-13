@@ -10,12 +10,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 
 
 @Entity
-class AccountBook(var price: Double, var content: String, var classifyName: String, var recordType: String, var owerName: String, var recordTime: Timestamp, var payType: String = "现金", var remarks: String = "") : BaseModel() {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	val id: Int = -1
-
+class AccountBook(var price: Double, var content: String, var classifyName: String, var recordType: String, var owerName: String, var recordTime: Timestamp, var payType: String = "现金", var remarks: String = "", @Id @GeneratedValue(strategy = GenerationType.AUTO) val id: Int? = null) : BaseModel() {
+	
 	@JsonIgnore
 	@ManyToOne
 	lateinit var currentUser: User

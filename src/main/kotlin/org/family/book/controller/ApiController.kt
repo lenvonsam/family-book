@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject
 import org.apache.commons.codec.binary.Base64
 import org.family.book.model.AccountBook
 import org.family.book.model.Classify
+import org.family.book.model.Feedback
 import org.family.book.model.Message
 import org.family.book.model.User
 import org.slf4j.LoggerFactory
@@ -17,8 +18,6 @@ import java.util.ArrayList
 import java.util.HashMap
 import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
-import org.family.book.model.FamilyUserMap
-import org.family.book.model.Feedback
 
 //所有api接口
 @RestController
@@ -179,7 +178,12 @@ class ApiController : BasicController() {
 	fun createClassify(classifyObj: Classify, userId: Int): Map<String, Any> {
 		val currentUser = userService.findByOne(userId)
 		val result = HashMap<String, Any>()
-		if (classifyService.save(classifyObj, currentUser)) result.put("returnCode", 0) else result.put("returnCode", -1)
+		if (classifyService.save(classifyObj, currentUser)) {
+			result.put("returnCode", 0)
+		} else {
+			result.put("returnCode", -1)
+			result.put("errMsg", "类别名称不能重复")
+		}
 		return result
 	}
 
@@ -190,7 +194,7 @@ class ApiController : BasicController() {
 		var word = if (req.getParameter("word") === null) "" else "%" + req.getParameter("word") + "%"
 		println("search word:>>${word}")
 		val user = userService.findByOne(userId)
-		return classifyService.getClassifyListPg(user.id, user.choosedFamily?.id!!, currentPage, type, word)
+		return classifyService.getClassifyListPg(user.id!!, user.choosedFamily?.id!!, currentPage, type, word)
 	}
 
 	//更新账本分类
@@ -221,8 +225,9 @@ class ApiController : BasicController() {
 				newUser.gender = if (resultObj.getString("gender").equals("1")) "男" else "女"
 				newUser.openId = openid
 				userService.save(newUser)
-				if (newUser.id > 0) {
-					result.put("userid", newUser.id)
+				log.info("new user id:${newUser.id}")
+				if (newUser.id!! > 0) {
+					result.put("userid", newUser.id!!)
 				}
 				result.put("needCreateFamily", 1)
 			} else {
@@ -233,7 +238,7 @@ class ApiController : BasicController() {
 				currentUser.nickname = resultObj.getString("nickName")
 				userService.save(currentUser)
 				var f = currentUser.choosedFamily
-				result.put("userid", currentUser.id)
+				result.put("userid", currentUser.id!!)
 				result.put("needCreateFamily", if (f == null || f.isShow == false) 1 else 0)
 				result.put("familyName", if (f == null) "" else f.name)
 				result.put("familyId", if (f == null) 0 else f.id.toString())
@@ -344,7 +349,7 @@ class ApiController : BasicController() {
 			var list: List<AccountBook>
 			var type = req.getParameter("type")
 			if (type == null) {
-				list = accountBookService.findMonthRecords(fixTime, f.id!!, u.id)
+				list = accountBookService.findMonthRecords(fixTime, f.id!!, u.id!!)
 			} else {
 				list = accountBookService.findMonthTotalRecords(fixTime, f.id!!)
 			}
@@ -361,8 +366,8 @@ class ApiController : BasicController() {
 				subMonthRecord.put(s, prMap)
 			}
 			result.put("returnCode", 0)
-			val totalPay = accountBookService.sumMonthRecords(fixTime, f.id!!, u.id, "支出")
-			val totalReceive = accountBookService.sumMonthRecords(fixTime, f.id!!, u.id, "收入")
+			val totalPay = accountBookService.sumMonthRecords(fixTime, f.id!!, u.id!!, "支出")
+			val totalReceive = accountBookService.sumMonthRecords(fixTime, f.id!!, u.id!!, "收入")
 			result.put("payMonthTotal", if (totalPay == null) 0 else totalPay)
 			result.put("receiveMonthTotal", if (totalReceive == null) 0 else totalReceive)
 			result.put("monthDate", "${fixTime.substring(6)}/${fixTime.substring(0, 4)}")

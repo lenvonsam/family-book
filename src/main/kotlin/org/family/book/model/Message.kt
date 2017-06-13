@@ -11,7 +11,7 @@ class Message(var type: Int, var sender: Int, var receiver: Int, var status: Str
 	// type 0系统消息 1 申请加入家庭 2 回复申请
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	val id: Int = -1
+	val id: Int? = null
 
 	var familyId: Int = -1
 }

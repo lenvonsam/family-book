@@ -15,6 +15,9 @@ interface ClassifyRepository : CrudRepository<Classify, Int> {
 	@Query(value = "select count(*) from classify where family_id=?1 and user_id=?2 and type=?3", nativeQuery = true)
 	fun findListCountByType(familyId: Int, userId: Int, type: String): Int
 
+	@Query(value = "select count(*) from classify where family_id=?1 and user_id=?2 and type=?3 and name=?4", nativeQuery = true)
+	fun findExistRecord(familyId: Int, userId: Int, type: String, name: String): Int
+
 	@Query(value = "SELECT count(*) FROM classify where family_id=?1 and user_id=?2 and concat_ws(name,update_at,type) like ?3", nativeQuery = true)
 	fun findListCountByWord(familyId: Int, userId: Int, word: String): Int
 

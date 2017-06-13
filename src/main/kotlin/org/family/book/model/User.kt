@@ -8,11 +8,8 @@ import javax.persistence.ManyToOne
 import com.fasterxml.jackson.annotation.JsonIgnore
 
 @Entity
-class User(var nickname: String, var enable: Int = 1) : BaseModel() {
+class User(var nickname: String, var enable: Int = 1, @Id @GeneratedValue(strategy = GenerationType.AUTO) val id: Int? = null) : BaseModel() {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	var id: Int = -1
 	var gender: String = "男"
 	var phone: String = ""
 	var password: String = ""

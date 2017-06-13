@@ -15,7 +15,7 @@ class AccountBookService {
 	fun save(ab: AccountBook): Boolean {
 		abRepo.save(ab)
 		println("new ab.id>>>${ab.id}")
-		return if (ab.id > 0) true else false
+		return if (ab.id!! > 0) true else false
 	}
 
 	fun findOne(id: Int): AccountBook {

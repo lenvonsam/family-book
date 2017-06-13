@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne
 class Classify( var name: String, var type: String) : BaseModel() {
 
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
-	 val id: Int = -1
+	 val id: Int? = null
 
 	@JsonIgnore
 	@ManyToOne

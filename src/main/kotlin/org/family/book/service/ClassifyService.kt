@@ -17,10 +17,15 @@ class ClassifyService {
 	fun listByFamilyUser(user: User, family: Family, type: String): List<Classify> = classifyRepo.findByUserAndFamilyAndType(user, family, type)
 
 	fun save(obj: Classify, currentUser: User): Boolean {
-		obj.user = currentUser
-		obj.family = currentUser.choosedFamily!!
-		classifyRepo.save(obj)
-		if (obj.id > 0) return true else return false
+		val count = classifyRepo.findExistRecord(currentUser.choosedFamily?.id!!, currentUser.id!!, obj.type, obj.name)
+		if (count == 0) {
+			obj.user = currentUser
+			obj.family = currentUser.choosedFamily!!
+			classifyRepo.save(obj)
+			if (obj.id!! > 0) return true else return false
+		} else {
+			return false
+		}
 	}
 
 	fun update(id: Int, name: String): Boolean {

@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 class FamilyUserMap : BaseModel() {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	var id: Int = 0
+	val id: Int? = null 
 
 	@JsonIgnore
 	@ManyToOne
